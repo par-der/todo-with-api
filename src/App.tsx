@@ -1,9 +1,13 @@
-function App() {
+import Header from './components/header.tsx';
+import Feature from './components/features.tsx';
+
+const App = () => {
   return (
-    <>
-      <h1 className="flex justify-center text-6xl font-bold ">todolist with api</h1>
-    </>
+    <main className="relative min-h-screen w-screen overflow-x-hidden">
+      <Header />
+      <Feature />
+    </main>
   );
-}
+};
 
 export default App;
