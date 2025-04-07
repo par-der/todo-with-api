@@ -11,6 +11,8 @@
     "prettier": "prettier . --write --check"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.72.0",
+    "axios": "^1.8.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -18,6 +20,7 @@
     "@eslint/js": "^9.21.0",
     "@tailwindcss/postcss": "^4.1.2",
     "@tailwindcss/vite": "^4.1.2",
+    "@tanstack/react-query-devtools": "^5.72.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
@@ -34,6 +37,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^15.15.0",
+    "json-server": "1.0.0-beta.3",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.2",
     "typescript": "~5.7.2",
