@@ -1,0 +1,7 @@
+{
+  "todos": [
+    { "id": "1", "title": "a title", "description": "тут был текст", "completed": true },
+    { "id": "2", "title": "another title", "description": "тут был текст", "completed": true },
+    { "id": "3", "title": "tutu", "description": "тут был текст", "completed": false }
+  ]
+}
