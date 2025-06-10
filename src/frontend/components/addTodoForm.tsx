@@ -1,4 +1,5 @@
-import { Button } from '../components/ui/button.tsx';
+import { Button } from './ui/button.tsx';
+import { Input } from './ui/input.tsx';
 import { TodoResponse } from '../entities/todo.ts';
 import { useAddTodoMutation } from '../services/mutations.ts';
 import { useForm } from 'react-hook-form';
@@ -14,20 +15,8 @@ const AddTodoForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex justify-center items-center col-auto flex-wrap gap-1.5 p-2">
-      <input
-        {...register('title')}
-        name="title"
-        className="p-2 border-2 items-center"
-        type="text"
-        placeholder="наименование"
-      />
-      <input
-        {...register('description')}
-        name="description"
-        className="p-2 border-2 items-center"
-        type="text"
-        placeholder="описание"
-      />
+      <Input {...register('title')} placeholder="наименование" className="flex-1" />
+      <Input {...register('description')} className="flex-1" placeholder="описание" />
       <Button disabled={isPending} type="submit" variant="destructive">
         Add
       </Button>

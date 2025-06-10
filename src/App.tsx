@@ -1,9 +1,9 @@
-import Header from './components/header.tsx';
-import TodoList from './components/todoList.tsx';
+import Header from './frontend/components/header.tsx';
+import TodoList from './frontend/components/todoList.tsx';
 
 const App = () => {
   return (
-    <main className="relative min-h-screen w-screen overflow-x-hidden">
+    <main className="min-h-screen bg-muted text-foreground">
       <Header />
       <TodoList />
     </main>
