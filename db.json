@@ -10,13 +10,13 @@
       "id": "2",
       "title": "another title",
       "description": " тут был текст",
-      "completed": true
+      "completed": false
     },
     {
       "id": "3",
       "title": "tutu",
       "description": " тут был текст",
-      "completed": true
+      "completed": false
     },
     {
       "id": "fcd4",
@@ -28,6 +28,18 @@
       "id": "8109",
       "title": "e",
       "description": "e",
+      "completed": false
+    },
+    {
+      "id": "884a",
+      "title": "12",
+      "description": "22",
+      "completed": false
+    },
+    {
+      "id": "6b1f",
+      "title": "выполнить бекенд django",
+      "description": "нужно настроить проект на django а также прикрутить docker и postgres sql для хранения информации там",
       "completed": false
     }
   ]

@@ -14,10 +14,10 @@ const AddTodoForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex justify-center items-center col-auto flex-wrap gap-1.5 p-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row gap-2 w-full">
       <Input {...register('title')} placeholder="наименование" className="flex-1" />
       <Input {...register('description')} className="flex-1" placeholder="описание" />
-      <Button disabled={isPending} type="submit" variant="destructive">
+      <Button disabled={isPending} type="submit" variant="destructive" className="w-full md:w-auto">
         Add
       </Button>
     </form>

@@ -13,8 +13,8 @@ const TodoList = () => {
     return <div>{error?.message || 'что то не так'}</div>;
   }
   return (
-    <div className="flex justify-center mt-6">
-      <Card className="w-full max-w-2xl">
+    <div className="px-4 md:px-8 max-w-6xl mx-auto mt-6">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-2xl">Мои задачи</CardTitle>
         </CardHeader>

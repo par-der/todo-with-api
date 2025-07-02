@@ -23,13 +23,10 @@ const TodoItem = (props: TodoItemProps) => {
   };
 
   return (
-    <div
-      key={todo.id}
-      className="flex justify-between items-center gap-4 border p-3 rounded-md shadow-sm bg-background"
-    >
+    <div key={todo.id} className="flex justify-between items-start gap-4 border p-4 rounded-lg bg-background shadow-sm">
       <div className="flex items-center gap-3">
         <Checkbox checked={todo.completed} onCheckedChange={handleCompleted} />
-        <div>
+        <div className="flex flex-col">
           <p className={`font-medium ${todo.completed ? 'line-through text-muted-foreground' : ''}`}>{todo.title}</p>
           {todo.description && <p className="text-sm text-muted-foreground">{todo.description}</p>}
         </div>

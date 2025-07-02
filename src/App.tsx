@@ -1,13 +1,8 @@
-import Header from './frontend/components/header.tsx';
-import TodoList from './frontend/components/todoList.tsx';
+import { RouterProvider } from 'react-router';
+import { router } from './routes/router.tsx';
 
 const App = () => {
-  return (
-    <main className="min-h-screen bg-muted text-foreground">
-      <Header />
-      <TodoList />
-    </main>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

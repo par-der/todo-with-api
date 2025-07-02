@@ -1,10 +1,10 @@
 import { Todo, TodoResponse } from '../entities/todo.ts';
 import axios from 'axios';
-import { mainConfig } from './axios.ts';
+import { apiClient, mainConfig } from './axios.ts';
+import { Login } from '../entities/auth.ts';
 
 export const getTodos = async (): Promise<Todo[]> => {
-  const config = mainConfig();
-  const response = await axios.get(`http://localhost:3000/todos/`, config);
+  const response = await apiClient.get(`todos/`); // вынести base url как общий
   return response.data;
 };
 
@@ -22,4 +22,9 @@ export const addTodo = async (data: TodoResponse) => {
 export const deleteTodo = async (id: number) => {
   const config = mainConfig();
   return await axios.delete(`http://localhost:3000/todos/${id}`, config);
+};
+
+export const loginApi = async (data: Login) => {
+  const config = mainConfig();
+  return await axios.post(import.meta.env.VITE_API_BASE_URL + 'auth/token/login/', data, config);
 };
