@@ -9,19 +9,16 @@ export const getTodos = async (): Promise<Todo[]> => {
 };
 
 export const updateTodoCompleted = async (id: number, completed: boolean): Promise<Todo[]> => {
-  const config = mainConfig();
-  const response = await axios.patch(`http://localhost:3000/todos/${id}`, { completed }, config);
+  const response = await apiClient.patch(`todos/${id}/`, { completed });
   return response.data;
 };
 
 export const addTodo = async (data: TodoResponse) => {
-  const config = mainConfig();
-  return await axios.post('http://localhost:3000/todos', data, config);
+  return await apiClient.post('todos/', data);
 };
 
 export const deleteTodo = async (id: number) => {
-  const config = mainConfig();
-  return await axios.delete(`http://localhost:3000/todos/${id}`, config);
+  return await apiClient.delete(`todos/${id}/`);
 };
 
 export const loginApi = async (data: Login) => {

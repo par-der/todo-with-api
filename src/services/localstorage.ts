@@ -1,5 +1,5 @@
 export const getToken = () => {
-  const data = JSON.parse(localStorage.getItem('auth-store') || '');
+  const data = JSON.parse(localStorage.getItem('auth-store') || '{}');
   console.log(data);
-  return data.state.token;
+  return data.state?.token;
 };

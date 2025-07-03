@@ -6,11 +6,15 @@ import { useForm } from 'react-hook-form';
 
 const AddTodoForm = () => {
   const { mutate, isPending } = useAddTodoMutation();
-  const { register, handleSubmit } = useForm<TodoResponse>({
+  const { register, handleSubmit, reset } = useForm<TodoResponse>({
     defaultValues: { title: '', description: '', completed: false },
   });
   const onSubmit = (todo: TodoResponse) => {
-    mutate(todo);
+    mutate(todo, {
+      onSuccess: () => {
+        reset();
+      },
+    });
   };
 
   return (
