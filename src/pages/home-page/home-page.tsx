@@ -2,7 +2,6 @@ import { useGetTodosQuery } from '../../services/queries.ts';
 import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card.tsx';
 import AddTodoForm from '@components/addTodoForm.tsx';
 import TodoItem from '@components/todoItem.tsx';
-import Header from '@components/header.tsx';
 
 const HomePage = () => {
   const { data: todos, isError, isLoading, error } = useGetTodosQuery();
@@ -16,7 +15,6 @@ const HomePage = () => {
 
   return (
     <>
-      <Header />
       <div className="px-4 md:px-8 max-w-6xl mx-auto mt-6">
         <Card className="w-full">
           <CardHeader>
