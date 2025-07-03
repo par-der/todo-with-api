@@ -1,10 +1,10 @@
-import { Todo, TodoResponse } from '../entities/todo.ts';
+import { Todo, TodoQueries, TodoResponse } from '../entities/todo.ts';
 import axios from 'axios';
 import { apiClient, mainConfig } from './axios.ts';
 import { Login } from '../entities/auth.ts';
 
-export const getTodos = async (): Promise<Todo[]> => {
-  const response = await apiClient.get(`todos/`); // вынести base url как общий
+export const getTodos = async (page = 1): Promise<TodoQueries> => {
+  const response = await apiClient.get(`todos/?page=${page}`); // вынести base url как общий
   return response.data;
 };
 

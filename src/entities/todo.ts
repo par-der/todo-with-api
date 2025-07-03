@@ -12,3 +12,10 @@ export interface TodoResponse {
   title: string;
   description: string;
 }
+
+export type TodoQueries = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Todo[];
+};
