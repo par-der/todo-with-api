@@ -1,3 +1,10 @@
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 export interface Todo {
   id: number;
   title: string;
@@ -13,9 +20,4 @@ export interface TodoResponse {
   description: string;
 }
 
-export type TodoQueries = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Todo[];
-};
+export type TodoQueries = PaginatedResponse<Todo>;
