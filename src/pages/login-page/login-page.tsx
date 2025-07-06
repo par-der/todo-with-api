@@ -29,7 +29,7 @@ const LoginPage = ({ className, ...props }: React.ComponentProps<'div'>) => {
       onSuccess: (res) => {
         const token = res.data?.auth_token;
         if (token) setAuth(token);
-        navigate('/');
+        navigate('/', { replace: true });
       },
       onError: (err) => {
         console.log(err + ' Ошибка авторизации');

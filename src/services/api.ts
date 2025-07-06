@@ -3,9 +3,11 @@ import axios from 'axios';
 import { apiClient, mainConfig } from './axios.ts';
 import { Login } from '../entities/auth.ts';
 
-export const getTodos = async (page = 1): Promise<TodoQueries> => {
-  const response = await apiClient.get(`todos/?page=${page}`); // вынести base url как общий
-  return response.data;
+export const getTodos = async (page = 1, pageSize = 15): Promise<TodoQueries> => {
+  const { data } = await apiClient.get('todos/', {
+    params: { page, page_size: pageSize },
+  });
+  return data;
 };
 
 export const updateTodoCompleted = async (id: number, completed: boolean): Promise<Todo[]> => {
