@@ -1,4 +1,7 @@
 import { ChevronLeft, Plus, Search, Book } from 'lucide-react';
+import { NavLink } from 'react-router';
+import AddTodoForm from '@components/addTodoForm.tsx';
+import { NAVIGATION_ROUTES } from '../../../constants/routes.ts';
 
 interface Props {
   isOpen: boolean;
@@ -36,18 +39,18 @@ export default function Sidebar({ isOpen, toggle }: Props) {
       </div>
 
       <nav className={`mt-4 px-2 flex flex-col gap-3`}>
-        <SidebarButton icon={Plus} label="Новый чат" isOpen={isOpen} />
-        <SidebarButton icon={Search} label="Поиск в чатах" isOpen={isOpen} />
-        <SidebarButton icon={Book} label="Библиотека" isOpen={isOpen} />
+        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Plus} label="Новый чат" isOpen={isOpen} />
+        {/*<SidebarButton icon={Search} label="Поиск в чатах" isOpen={isOpen} />*/}
+        {/*<SidebarButton icon={Book} label="Библиотека" isOpen={isOpen} />*/}
       </nav>
     </aside>
   );
 }
 
-type BtnProps = { icon: any; label: string; isOpen: boolean };
-function SidebarButton({ icon: Icon, label, isOpen }: BtnProps) {
+type BtnProps = { to: string; icon: any; label: string; isOpen: boolean };
+function SidebarButton({ to, icon: Icon, label, isOpen }: BtnProps) {
   return (
-    <button className="flex items-center p-2 rounded hover:bg-zinc-100 transition-colors">
+    <NavLink to={to} className="flex items-center p-2 rounded hover:bg-zinc-100 transition-colors">
       <div className="w-6 flex justify-center">
         <Icon size={24} />
       </div>
@@ -60,6 +63,6 @@ function SidebarButton({ icon: Icon, label, isOpen }: BtnProps) {
       >
         {label}
       </span>
-    </button>
+    </NavLink>
   );
 }

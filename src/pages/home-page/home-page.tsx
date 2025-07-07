@@ -32,7 +32,6 @@ const HomePage = () => {
           className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'} h-screen overflow-y-auto p-6 w-full`}
         >
           <h1 className="text-2xl font-bold mb-4">Мои задачи (всего: {count})</h1>
-          <AddTodoForm />
           <div className="space-y-4 mt-4">{items && items.map((todo) => <TodoItem key={todo.id} todo={todo} />)}</div>
 
           <div className="flex gap-2 pt-4 flex-wrap">
