@@ -1,10 +1,10 @@
 import { useGetTodosQuery } from '../../services/queries.ts';
 import AddTodoForm from '@components/addTodoForm.tsx';
 import TodoItem from '@components/todoItem.tsx';
-import Sidebar from '@components/sidebar/sidebar.tsx';
 import { mapTodos } from '../../lib/todo-utils.ts';
 import { useState } from 'react';
 import { usePaginationParams } from '../../lib/usePaginationParams.ts';
+import Sidebar from '@components/layout/sidebar/sidebar.tsx';
 
 const HomePage = () => {
   const { page, pageSize, setPage, setSize } = usePaginationParams(15);
