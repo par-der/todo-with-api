@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Sidebar from '@components/layout/sidebar/sidebar.tsx';
-import AddTodoForm from '@components/addTodoForm.tsx';
+import Sidebar from '@/shared/ui/layout/sidebar/sidebar';
+import { AddTodoForm } from '@/features/add-todo';
 
 const AddTodoPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -18,7 +18,6 @@ const AddTodoPage = () => {
       >
         <h1 className="text-2xl font-bold mb-6">Добавить новую задачу</h1>
 
-        {/* Перенесённая форма AddTodoForm */}
         <div className="bg-white rounded shadow p-4 max-w-xl">
           <AddTodoForm />
         </div>
