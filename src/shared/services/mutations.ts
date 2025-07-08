@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addTodo, deleteTodo, loginApi, updateTodoCompleted } from './api.ts';
+import { addTodo, deleteTodo, loginApi, registerApi, updateTodoCompleted } from './api.ts';
+import { Login, Register } from '@/entities/auth.ts';
 import { TodosResponse } from '@/entities/todo';
-import { Login } from '@/entities/auth.ts';
 
 export const useTodoSetCompletedMutation = () => {
   const queryClient = useQueryClient();
@@ -44,6 +44,18 @@ export const useLoginTodoMutation = () => {
   return useMutation({
     mutationFn: (data: Login) => {
       return loginApi(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+    },
+  });
+};
+
+export const useAuthTodoMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Register) => {
+      return registerApi(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
