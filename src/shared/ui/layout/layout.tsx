@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { TodoList } from '@/features/todo-list';
-import Sidebar from '@/shared/ui/layout/sidebar/sidebar';
+import { Outlet } from 'react-router';
+import Sidebar from './sidebar/sidebar';
 
-const HomePage = () => {
+export const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen((p) => !p);
 
@@ -12,10 +12,8 @@ const HomePage = () => {
       <main
         className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'} h-screen overflow-y-auto p-6 w-full`}
       >
-        <TodoList />
+        <Outlet />
       </main>
     </div>
   );
 };
-
-export default HomePage;

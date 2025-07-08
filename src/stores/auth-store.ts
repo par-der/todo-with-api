@@ -1,4 +1,4 @@
-import { IAuthState } from '../types/auth.ts';
+import { IAuthState } from '@/shared/types/auth';
 import { create } from 'zustand/react';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -22,19 +22,3 @@ export const useAuthStore = create<AuthStoreState>()(
     },
   ),
 );
-
-// export const useAuthStore = create<AuthStoreState>((set) => ({
-//   isAuthenticated: false,
-//   login: (token) => {
-//     localStorage.setItem('token', token);
-//     set({
-//       isAuthenticated: true,
-//     });
-//   },
-//   logout: () => {
-//     localStorage.removeItem('token');
-//     set({
-//       isAuthenticated: false,
-//     });
-//   },
-// }));

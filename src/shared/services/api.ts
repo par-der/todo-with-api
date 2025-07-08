@@ -1,9 +1,9 @@
-import { Todo, TodoQueries, TodoResponse } from '../entities/todo.ts';
 import axios from 'axios';
 import { apiClient, mainConfig } from './axios.ts';
-import { Login } from '../entities/auth.ts';
+import { Login } from '@/entities/auth.ts';
+import { Todo, TodosResponse } from '@/entities/todo';
 
-export const getTodos = async (page = 1, pageSize = 15): Promise<TodoQueries> => {
+export const getTodos = async (page = 1, pageSize = 15): Promise<TodosResponse> => {
   const { data } = await apiClient.get('todos/', {
     params: { page, page_size: pageSize },
   });
@@ -15,7 +15,7 @@ export const updateTodoCompleted = async (id: number, completed: boolean): Promi
   return response.data;
 };
 
-export const addTodo = async (data: TodoResponse) => {
+export const addTodo = async (data: TodosResponse) => {
   return await apiClient.post('todos/', data);
 };
 
