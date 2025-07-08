@@ -1,7 +1,7 @@
 import { useGetTodosQuery } from '@/shared/services/queries';
 import { usePaginationParams } from '@/shared/lib/usePaginationParams';
 import { mapTodos } from '@/shared/lib/todo-utils';
-import { TodoItem } from '@/entities/todo';
+import { TodoItem } from '@/entities/todo/ui/todo-item';
 import { Pagination } from '@/shared/ui/pagination';
 
 export const TodoList = () => {
