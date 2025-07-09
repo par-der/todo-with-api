@@ -1,7 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addTodo, deleteTodo, loginApi, registerApi, updateTodoCompleted } from './api.ts';
+import { addTodo, deleteTodo, loginApi, logoutApi, registerApi, updateTodoCompleted } from './api.ts';
 import { Login, Register } from '@/entities/auth.ts';
 import { TodosResponse } from '@/entities/todo';
+import { useAuthStore } from '@/stores/auth-store.ts';
+import { useNavigate } from 'react-router';
 
 export const useTodoSetCompletedMutation = () => {
   const queryClient = useQueryClient();
@@ -59,6 +61,21 @@ export const useAuthTodoMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
+    },
+  });
+};
+
+export const useLogoutTodoMutation = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const clearAuth = useAuthStore((s) => s.logout);
+
+  return useMutation({
+    mutationFn: logoutApi,
+    onSuccess: () => {
+      clearAuth();
+      queryClient.clear();
+      navigate('/login', { replace: true });
     },
   });
 };

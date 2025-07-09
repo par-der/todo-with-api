@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { TodoQueries } from '../entities/todo.ts';
 import { getTodos } from './api.ts';
+import { TodoQueries } from '@/entities/todo';
 
 export const useGetTodosQuery = (page: number, pageSize: number) => {
   return useQuery<TodoQueries, Error>({

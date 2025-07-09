@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { TodoList } from '@/features/todo-list';
 import Sidebar from '@/shared/ui/layout/sidebar/sidebar';
+import { LogoutButton } from '@/shared/ui/logout-button.tsx';
 
 const HomePage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -13,6 +14,7 @@ const HomePage = () => {
         className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'} h-screen overflow-y-auto p-6 w-full`}
       >
         <TodoList />
+        <LogoutButton />
       </main>
     </div>
   );

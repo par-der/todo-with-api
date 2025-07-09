@@ -8,3 +8,5 @@ export interface Register {
   password: string;
   email?: string;
 }
+
+export type LogoutResponse = void;

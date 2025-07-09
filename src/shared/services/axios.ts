@@ -7,11 +7,27 @@ export const mainConfig = (): AxiosRequestConfig => ({
   },
 });
 
-export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  // prettier-ignore
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Token ${getToken()}`,
-  },
-});
+export const createApiClient = (token?: string) =>
+  axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Token ${token}` }),
+    },
+    withCredentials: true,
+  });
+
+export let apiClient = createApiClient(getToken());
+
+export const setApiClient = (token?: string) => {
+  apiClient = createApiClient(token);
+};
+
+// export const apiClient = axios.create({
+//   baseURL: import.meta.env.VITE_API_BASE_URL,
+//   // prettier-ignore
+//   headers: {
+//     'Content-Type': 'application/json',
+//     'Authorization': `Token ${getToken()}`,
+//   },
+// });

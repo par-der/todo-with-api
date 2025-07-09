@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { apiClient, mainConfig } from './axios.ts';
-import { Login, Register } from '@/entities/auth.ts';
-import { Todo, TodosResponse } from '@/entities/todo';
+import { Login, LogoutResponse, Register } from '@/entities/auth.ts';
+import { Todo, TodoQueries, TodosResponse } from '@/entities/todo';
 
-export const getTodos = async (page = 1, pageSize = 15): Promise<TodosResponse> => {
+export const getTodos = async (page = 1, pageSize = 15): Promise<TodoQueries> => {
   const { data } = await apiClient.get('todos/', {
     params: { page, page_size: pageSize },
   });
@@ -31,4 +31,8 @@ export const loginApi = async (data: Login) => {
 export const registerApi = async (data: Register) => {
   const config = mainConfig();
   return await axios.post(import.meta.env.VITE_API_BASE_URL + 'auth/users/', data, config);
+};
+
+export const logoutApi = async (): Promise<LogoutResponse> => {
+  return await apiClient.post('auth/token/logout/');
 };

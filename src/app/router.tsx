@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router';
-import { ProtectedRoute } from '@/app/protected-route';
+import { GuestOnlyRoute, ProtectedRoute } from '@/app/protected-route';
 import { NAVIGATION_ROUTES } from '@/shared/constants/routes';
 import { lazy } from 'react';
 import HomePage from '@/pages/home-page/home-page';
@@ -23,11 +23,16 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: NAVIGATION_ROUTES.LOGIN,
-    element: <LoginPage />,
-  },
-  {
-    path: NAVIGATION_ROUTES.SIGN_UP,
-    element: <AuthPage />,
+    element: <GuestOnlyRoute />,
+    children: [
+      {
+        path: NAVIGATION_ROUTES.LOGIN,
+        element: <LoginPage />,
+      },
+      {
+        path: NAVIGATION_ROUTES.SIGN_UP,
+        element: <AuthPage />,
+      },
+    ],
   },
 ]);
