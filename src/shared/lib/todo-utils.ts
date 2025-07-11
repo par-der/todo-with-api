@@ -1,6 +1,6 @@
-import { Todo, TodosResponse } from '@/entities/todo';
+import { TodoQueries } from '@/entities/todo';
 
-export const mapTodos = (data: TodosResponse | undefined, pageSize: number) => {
+export const mapTodos = (data: TodoQueries | undefined, pageSize: number) => {
   if (!data) {
     return { items: [], next: null, previous: null, count: 0, totalPages: 0 };
   }

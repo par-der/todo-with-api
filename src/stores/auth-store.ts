@@ -1,6 +1,7 @@
 import { IAuthState } from '@/shared/types/auth';
 import { create } from 'zustand/react';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { setApiClient } from '@/shared/services/axios.ts';
 
 interface AuthStoreState extends IAuthState {
   login: (token: string) => void;
@@ -12,8 +13,14 @@ export const useAuthStore = create<AuthStoreState>()(
     (set) => ({
       token: '',
       isAuthenticated: false,
-      login: (token) => set({ token, isAuthenticated: true }),
-      logout: () => set({ token: '', isAuthenticated: false }),
+      login: (token: string) => {
+        set({ token, isAuthenticated: true });
+        setApiClient(token);
+      },
+      logout: () => {
+        set({ token: '', isAuthenticated: false });
+        setApiClient();
+      },
     }),
     {
       name: 'auth-store',

@@ -15,10 +15,19 @@ export interface Todo {
   updated_at?: Date;
 }
 
-export interface TodoResponse {
+export interface TodosResponse {
   completed: boolean;
   title: string;
   description: string;
 }
+
+// export interface TodosResponse {
+//   count: number;
+//   next: string | null;
+//   previous: string | null;
+//   results: Todo[];
+// }
+
+export type TodoFormData = Pick<Todo, 'title' | 'description' | 'completed'>;
 
 export type TodoQueries = PaginatedResponse<Todo>;

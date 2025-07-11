@@ -1,4 +1,4 @@
-import { ChevronLeft, Plus } from 'lucide-react';
+import { Calendar, ChevronLeft } from 'lucide-react';
 import { NavLink } from 'react-router';
 import { NAVIGATION_ROUTES } from '../../../constants/routes.ts';
 
@@ -16,7 +16,7 @@ export default function Sidebar({ isOpen, toggle }: Props) {
     >
       <div className="flex items-center justify-between p-4">
         <button onClick={toggle} className="relative flex items-center focus:outline-none" title="Открыть / закрыть">
-          <img src="/logo.svg" alt="Аватар" className="w-8 h-8 rounded-full object-cover" />
+          <img src="/logo1.svg" alt="Аватар" className="w-8 h-8 rounded-full object-cover" />
         </button>
         <div
           className={`
@@ -38,7 +38,8 @@ export default function Sidebar({ isOpen, toggle }: Props) {
       </div>
 
       <nav className={`mt-4 px-2 flex flex-col gap-3`}>
-        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Plus} label="Новый чат" isOpen={isOpen} />
+        {/*<SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Plus} label="Новый чат" isOpen={isOpen} />*/}
+        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Calendar} label="Сегодня" isOpen={isOpen} />
         {/*<SidebarButton icon={Search} label="Поиск в чатах" isOpen={isOpen} />*/}
         {/*<SidebarButton icon={Book} label="Библиотека" isOpen={isOpen} />*/}
       </nav>
