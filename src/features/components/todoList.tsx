@@ -1,6 +1,6 @@
 import { Todo } from '../../entities/todo.ts';
-import AddTodoForm from '@components/addTodoForm.tsx';
-import TodoItem from '@components/todoItem.tsx';
+import { TodoItem } from '@/entities/todo';
+import { AddTodoForm } from '@/features/add-todo';
 
 interface TodoListProps {
   todos: Todo[];

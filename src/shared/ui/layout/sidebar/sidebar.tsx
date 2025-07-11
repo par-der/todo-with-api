@@ -16,7 +16,7 @@ export default function Sidebar({ isOpen, toggle }: Props) {
     >
       <div className="flex items-center justify-between p-4">
         <button onClick={toggle} className="relative flex items-center focus:outline-none" title="Открыть / закрыть">
-          <img src="/logo.svg" alt="Аватар" className="w-8 h-8 rounded-full object-cover" />
+          <img src="/logo1.svg" alt="Аватар" className="w-8 h-8 rounded-full object-cover" />
         </button>
         <div
           className={`
