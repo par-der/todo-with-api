@@ -21,12 +21,17 @@ export interface TodosResponse {
   description: string;
 }
 
-// export interface TodosResponse {
-//   count: number;
-//   next: string | null;
-//   previous: string | null;
-//   results: Todo[];
-// }
+export interface TodoList {
+  id: number;
+  title: string;
+  description: string;
+  due_date: string;
+  remind_at: string | null;
+  category: Category;
+  completed: boolean;
+}
+
+export type Category = 'HEALTH' | 'WORK' | 'MENTAL_HEALTH' | 'STUDY';
 
 export type TodoFormData = Pick<Todo, 'title' | 'description' | 'completed'>;
 

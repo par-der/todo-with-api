@@ -1,4 +1,4 @@
-import { Calendar, ChevronLeft } from 'lucide-react';
+import { Calendar, ChevronLeft, Clock11, Search } from 'lucide-react';
 import { NavLink } from 'react-router';
 import { NAVIGATION_ROUTES } from '../../../constants/routes.ts';
 
@@ -39,9 +39,9 @@ export default function Sidebar({ isOpen, toggle }: Props) {
 
       <nav className={`mt-4 px-2 flex flex-col gap-3`}>
         {/*<SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Plus} label="Новый чат" isOpen={isOpen} />*/}
-        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Calendar} label="Сегодня" isOpen={isOpen} />
-        {/*<SidebarButton icon={Search} label="Поиск в чатах" isOpen={isOpen} />*/}
-        {/*<SidebarButton icon={Book} label="Библиотека" isOpen={isOpen} />*/}
+        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Calendar} label="Todo" isOpen={isOpen} />
+        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Search} label="Поиск" isOpen={isOpen} />
+        <SidebarButton to={NAVIGATION_ROUTES.TODAY} icon={Clock11} label="Сегодня" isOpen={isOpen} />
       </nav>
     </aside>
   );

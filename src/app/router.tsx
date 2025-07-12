@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router';
 import { GuestOnlyRoute, ProtectedRoute } from '@/app/protected-route';
 import { NAVIGATION_ROUTES } from '@/shared/constants/routes';
 import { lazy } from 'react';
+import TodayPage from '@/pages/today-page/today-page.tsx';
 
 const LoginPage = lazy(() => import('@/pages/login-page/login-page'));
 const AddTodoPage = lazy(() => import('@/pages/add-todo-page/add-todo-page'));
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: NAVIGATION_ROUTES.USER,
         element: <UserPage />,
+      },
+      {
+        path: NAVIGATION_ROUTES.TODAY,
+        element: <TodayPage />,
       },
     ],
   },
