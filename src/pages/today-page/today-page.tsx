@@ -7,11 +7,13 @@ const TodayPage = () => {
   return (
     <section className="max-w-md mx-auto px-4">
       <header className="pt-6 pb-2">
-        <h1 className="text-4xl font-extrabold">Today</h1>
-        <p className="text-xl text-muted-foreground">{format(today, 'd MMM')}</p>
+        <h1 className="text-4xl font-extrabold text-gray-900">Today</h1>
+        <p className="text-xl text-gray-600 mt-1">{format(today, 'd MMM')}</p>
       </header>
 
-      <TodayTodoList />
+      <div className="bg-white overflow-hidden">
+        <TodayTodoList />
+      </div>
     </section>
   );
 };

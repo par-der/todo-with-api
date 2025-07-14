@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { apiClient, mainConfig } from './axios.ts';
 import { Login, LogoutResponse, Register } from '@/entities/auth.ts';
-import { Todo, TodoQueries, TodosResponse } from '@/entities/todo';
+import { Todo, TodoQueries, TodosResponse, TodoUpdateData } from '@/entities/todo';
 
 export const getTodos = async (page = 1, pageSize = 15): Promise<TodoQueries> => {
   const { data } = await apiClient.get('todos/', {
@@ -13,6 +13,12 @@ export const getTodos = async (page = 1, pageSize = 15): Promise<TodoQueries> =>
 export const updateTodoCompleted = async (id: number, completed: boolean): Promise<Todo[]> => {
   const response = await apiClient.patch(`todos/${id}/`, { completed });
   return response.data;
+};
+
+export const updateTodo = async (updateData: TodoUpdateData): Promise<Todo> => {
+  const { id, ...data } = updateData;
+  const { data: response } = await apiClient.put(`todos/${id}/`, data);
+  return response;
 };
 
 export const addTodo = async (data: TodosResponse) => {
