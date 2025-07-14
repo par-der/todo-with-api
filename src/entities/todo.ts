@@ -10,9 +10,12 @@ export interface Todo {
   id: number;
   title: string;
   description: string;
+  due_date: string;
+  remind_at: string | null;
+  category: Category;
   completed: boolean;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TodosResponse {
@@ -21,18 +24,37 @@ export interface TodosResponse {
   description: string;
 }
 
-export interface TodoList {
-  id: number;
+export interface TodoList extends Todo {
+  user: string;
+}
+
+export interface TodoFormData {
   title: string;
   description: string;
   due_date: string;
-  remind_at: string | null;
+  remind_at?: string;
   category: Category;
-  completed: boolean;
+  completed?: boolean;
+}
+
+export interface TodoUpdateData extends Partial<TodoFormData> {
+  id: number;
 }
 
 export type Category = 'HEALTH' | 'WORK' | 'MENTAL_HEALTH' | 'STUDY';
 
-export type TodoFormData = Pick<Todo, 'title' | 'description' | 'completed'>;
-
 export type TodoQueries = PaginatedResponse<Todo>;
+
+export const CATEGORY_LABELS: Record<Category, string> = {
+  HEALTH: 'Здоровье',
+  WORK: 'Работа',
+  MENTAL_HEALTH: 'Ментальное здоровье',
+  STUDY: 'Учеба',
+};
+
+export const CATEGORY_COLORS: Record<Category, string> = {
+  HEALTH: 'bg-blue-100 text-blue-600 border-blue-200',
+  WORK: 'bg-green-100 text-green-600 border-green-200',
+  MENTAL_HEALTH: 'bg-purple-100 text-purple-600 border-purple-200',
+  STUDY: 'bg-orange-100 text-orange-600 border-orange-200',
+};
