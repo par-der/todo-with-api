@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addTodo, deleteTodo, loginApi, logoutApi, registerApi, updateTodoCompleted } from './api.ts';
+import { addTodo, deleteTodo, loginApi, logoutApi, registerApi, updateTodo, updateTodoCompleted } from './api.ts';
 import { Login, Register } from '@/entities/auth.ts';
-import { TodosResponse } from '@/entities/todo';
+import { TodosResponse, TodoUpdateData } from '@/entities/todo';
 import { useAuthStore } from '@/stores/auth-store.ts';
 import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 
 export const useTodoSetCompletedMutation = () => {
   const queryClient = useQueryClient();
@@ -76,6 +77,22 @@ export const useLogoutTodoMutation = () => {
       clearAuth();
       queryClient.clear();
       navigate('/login', { replace: true });
+    },
+  });
+};
+
+export const useUpdateTodoMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: TodoUpdateData) => {
+      return updateTodo(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      toast.success('Задача успешно обновлена');
+    },
+    onError: () => {
+      toast.error('Ошибка при обновлении задачи');
     },
   });
 };

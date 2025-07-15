@@ -4,4 +4,5 @@ export const NAVIGATION_ROUTES = {
   ADD_TODO: '/add-todo',
   SIGN_UP: '/signup',
   USER: '/user',
+  TODAY: '/today',
 };
