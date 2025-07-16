@@ -28,14 +28,64 @@ export function useCategoryHoverAnimation(
     if (!card || !content) return;
 
     const enter = () => {
-      /* …gsap.to… */
+      gsap.to(card, {
+        y: -8,
+        scale: 1.03,
+        duration: 0.1,
+        ease: 'power2.out',
+      });
+
+      gsap.to(content, {
+        y: -2,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+
+      // Анимация иконки
+      gsap.to(content.querySelector('.icon'), {
+        scale: 1.2,
+        rotation: 5,
+        duration: 0.3,
+        ease: 'back.out(1.7)',
+      });
     };
     const leave = () => {
-      /* … */
+      gsap.to(card, {
+        y: 0,
+        scale: 1,
+        duration: 0.1,
+        ease: 'power2.out',
+      });
+
+      gsap.to(content, {
+        y: 0,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+
+      // Возврат иконки
+      gsap.to(content.querySelector('.icon'), {
+        scale: 1,
+        rotation: 0,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
     };
     const click = () => {
-      /* … */
-      onSelect(category as any);
+      gsap.to(card, {
+        scale: 0.95,
+        duration: 0.1,
+        ease: 'power2.out',
+        onComplete: () => {
+          gsap.to(card, {
+            scale: isSelected ? 1.03 : 1,
+            duration: 0.2,
+            ease: 'back.out(1.7)',
+          });
+        },
+      });
+
+      onSelect(category);
     };
 
     card.addEventListener('mouseenter', enter);

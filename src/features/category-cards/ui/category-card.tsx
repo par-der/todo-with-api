@@ -61,3 +61,5 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, count, col
     </div>
   );
 };
+
+export default CategoryCard;

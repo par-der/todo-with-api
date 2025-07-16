@@ -1,4 +1,4 @@
-import { User } from '@/shared/types/user.ts';
+import { User, UserInfo } from '@/shared/types/user.ts';
 import { apiClient } from '@/shared/services/axios.ts';
 
 export const getCurrentUser = async (): Promise<User> => {
@@ -26,4 +26,10 @@ export const uploadAvatar = async (file: File): Promise<User> => {
 
 export const setUsernameApi = async (payload: { new_username: string; current_password: string }) => {
   return await apiClient.post('auth/users/set_username/', payload);
+};
+
+export const getUserInfo = async (): Promise<UserInfo> => {
+  const full = await getCurrentUser();
+  const { id, username, email, first_name, last_name } = full;
+  return { id, username, email, first_name, last_name };
 };

@@ -68,12 +68,7 @@ export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => 
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            Редактировать задачу
-            <Button variant="ghost" size="sm" onClick={handleClose} className="h-6 w-6 p-0">
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
+          <DialogTitle className="flex items-center justify-between">Редактировать задачу</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

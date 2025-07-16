@@ -23,18 +23,12 @@ const HomePage = () => {
       <main
         className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'} h-screen overflow-y-auto p-6 w-full`}
       >
-        <div className="mb-6">
-          <UserAvatar />
-        </div>
         <CategoryCards
           onCategorySelect={handleCategorySelect}
           selectedCategory={selectedCategory}
           todoStats={todoStats}
         />
         <TodoList selectedCategory={selectedCategory} />
-        <div className="mt-8">
-          <LogoutButton />
-        </div>
       </main>
     </div>
   );

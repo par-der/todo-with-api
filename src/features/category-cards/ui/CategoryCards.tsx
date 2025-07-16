@@ -76,3 +76,5 @@ export const CategoryCards: React.FC<CategoryCardsProps> = ({ onCategorySelect, 
     </div>
   );
 };
+
+export default CategoryCards;
