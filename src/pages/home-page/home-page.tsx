@@ -6,15 +6,26 @@ import UserAvatar from '@/features/components/user-avatar.tsx';
 import { Category } from '@/entities/todo.ts';
 import { useGetTodoStatsQuery } from '@/shared/services/queries.ts';
 import CategoryCards from '@/features/category-cards/ui/CategoryCards.tsx';
+import { FloatingActionButton } from '@/features/add-todo-modal/ui/floating-action-button.tsx';
+import { AddTodoModal } from '@/features/add-todo-modal/ui/add-todo-modal.tsx';
 
 const HomePage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { data: todoStats } = useGetTodoStatsQuery();
   const toggleSidebar = () => setSidebarOpen((p) => !p);
 
   const handleCategorySelect = (category: Category | null) => {
     setSelectedCategory(category);
+  };
+
+  const handleAddTodo = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
   };
 
   return (
@@ -29,6 +40,9 @@ const HomePage = () => {
           todoStats={todoStats}
         />
         <TodoList selectedCategory={selectedCategory} />
+
+        <FloatingActionButton onClick={handleAddTodo} />
+        <AddTodoModal isOpen={isAddModalOpen} onClose={handleCloseAddModal} />
       </main>
     </div>
   );

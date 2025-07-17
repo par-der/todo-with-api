@@ -36,7 +36,7 @@ export const AddTodoForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <div className="space-y-2">
         <Label htmlFor="title" className="text-sm font-medium">
           Название задачи
@@ -61,7 +61,7 @@ export const AddTodoForm = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="due_date" className="text-sm font-medium flex items-center gap-2">
             <Calendar className="w-4 h-4" />

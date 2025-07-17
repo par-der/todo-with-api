@@ -49,8 +49,7 @@ export default function Sidebar({ isOpen, toggle }: Props) {
 
       <nav className="mt-4 px-2 flex flex-col gap-3 flex-1">
         <SidebarButton to={NAVIGATION_ROUTES.HOME} icon={Files} label="Главная" isOpen={isOpen} />
-        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Calendar} label="Todo" isOpen={isOpen} />
-        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Search} label="Поиск" isOpen={isOpen} />
+        {/*<SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Search} label="Поиск" isOpen={isOpen} />*/}
         <SidebarButton to={NAVIGATION_ROUTES.TODAY} icon={Clock11} label="Сегодня" isOpen={isOpen} />
       </nav>
 
