@@ -1,16 +1,23 @@
-import { Calendar, ChevronLeft, Clock11, Search, User, UserIcon } from 'lucide-react';
+import { Calendar, ChevronLeft, Clock11, Files, Search, User, UserIcon } from 'lucide-react';
 import { NavLink } from 'react-router';
 import { NAVIGATION_ROUTES } from '../../../constants/routes.ts';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar.tsx';
+import { useCurrentUserQuery } from '@/features/user-form/api/queries.ts';
 
 interface Props {
   isOpen: boolean;
   toggle: () => void;
-  userName?: string;
-  userAvatarUrl?: string;
 }
 
-export default function Sidebar({ isOpen, toggle, userName, userAvatarUrl }: Props) {
+export default function Sidebar({ isOpen, toggle }: Props) {
+  const { data: user, isLoading } = useCurrentUserQuery();
+  const displayName =
+    user?.first_name || user?.last_name
+      ? [user?.first_name, user?.last_name].filter(Boolean).join(' ')
+      : (user?.username ?? user?.email ?? 'Гость');
+
+  const avatarUrl = user?.avatar ?? '/logo.svg';
+
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-50 bg-zinc-50 text-gray-700 border-r border-zinc-50
@@ -41,6 +48,7 @@ export default function Sidebar({ isOpen, toggle, userName, userAvatarUrl }: Pro
       </div>
 
       <nav className="mt-4 px-2 flex flex-col gap-3 flex-1">
+        <SidebarButton to={NAVIGATION_ROUTES.HOME} icon={Files} label="Главная" isOpen={isOpen} />
         <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Calendar} label="Todo" isOpen={isOpen} />
         <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Search} label="Поиск" isOpen={isOpen} />
         <SidebarButton to={NAVIGATION_ROUTES.TODAY} icon={Clock11} label="Сегодня" isOpen={isOpen} />
@@ -53,7 +61,7 @@ export default function Sidebar({ isOpen, toggle, userName, userAvatarUrl }: Pro
         >
           <div className="w-6 flex justify-center">
             <Avatar className="h-6 w-6">
-              <AvatarImage src={userAvatarUrl ?? '/logo.svg'} alt="Avatar" />
+              <AvatarImage src={avatarUrl} alt="Avatar" />
               <AvatarFallback>
                 <UserIcon size={16} />
               </AvatarFallback>
@@ -66,7 +74,7 @@ export default function Sidebar({ isOpen, toggle, userName, userAvatarUrl }: Pro
               ${isOpen ? 'ml-3 max-w-xs opacity-100' : 'ml-0 max-w-0 opacity-0'}
             `}
           >
-            {userName}
+            {isLoading ? '…' : displayName}
           </span>
         </NavLink>
       </div>
