@@ -21,4 +21,4 @@
 ---
 
 - Проект можно посмотреть по этой ссылке на ютубе
-![Todo App Demo](https://youtu.be/Ya8q48TF_oA)
+https://youtu.be/Ya8q48TF_oA
