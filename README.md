@@ -1,8 +1,8 @@
 # 📝 Todo with API  
 **React + TypeScript + Vite**
 
-> Мини‑малистичное, но функциональное приложение‑трекер задач с категориями, пагинацией и “живыми” счётчиками, построенное на стеке React 19 + TanStack Query 5 + shadcn/ui (Radix Primitives + Tailwind CSS).  
-> Для бэкенда используется `Django`.
+- Мини‑малистичное, но функциональное приложение‑трекер задач с категориями, пагинацией и “живыми” счётчиками, построенное на стеке React 19 + TanStack Query 5 + shadcn/ui (Radix Primitives + Tailwind CSS).
+- Для бэкенда используется `Django`.
 
 ---
 
@@ -19,3 +19,6 @@
 | 🛠 **Строгий ESLint + Prettier** | AirBnB TS‑конфиг, проверка перед коммитом. |
 
 ---
+
+- Проект можно посмотреть по этой ссылке на ютубе
+![Todo App Demo](https://youtu.be/Ya8q48TF_oA)
