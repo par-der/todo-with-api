@@ -91,7 +91,7 @@ export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => 
               id="edit-description"
               {...register('description')}
               placeholder="Опишите задачу подробнее"
-              className="min-h-[80px]"
+              className="min-h-[80px] text-wrap whitespace-pre-wrap"
             />
           </div>
 

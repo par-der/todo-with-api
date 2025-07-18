@@ -2,7 +2,7 @@ import { useAddTodoMutation } from '@/shared/services/mutations.ts';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { Category, CATEGORY_LABELS, TodoFormData } from '@/entities/todo.ts';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Button, Input, Label } from '@/shared/ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Calendar, Clock, Tag } from 'lucide-react';
@@ -20,7 +20,7 @@ export const AddTodoModal = ({ isOpen, onClose }: AddTodoModalProps) => {
       title: '',
       description: '',
       due_date: format(new Date(), 'yyyy-MM-dd'),
-      remind_at: '',
+      remind_at: null as unknown as string,
       category: 'HEALTH',
       completed: false,
     },
@@ -48,7 +48,7 @@ export const AddTodoModal = ({ isOpen, onClose }: AddTodoModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px]" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">Добавить новую задачу</DialogTitle>
         </DialogHeader>
@@ -73,7 +73,7 @@ export const AddTodoModal = ({ isOpen, onClose }: AddTodoModalProps) => {
               id="add-description"
               {...register('description')}
               placeholder="Опишите задачу подробнее"
-              className="min-h-[80px]"
+              className="min-h-[80px] text-wrap whitespace-pre-wrap"
             />
           </div>
 
