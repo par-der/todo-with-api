@@ -40,7 +40,7 @@ export const CategoryCards: React.FC<CategoryCardsProps> = ({ onCategorySelect, 
 
   const handleCategorySelect = (category: Category) => {
     if (selectedCategory === category) {
-      onCategorySelect(null); // Убираем выбор если кликнули на уже выбранную
+      onCategorySelect(null);
     } else {
       onCategorySelect(category);
     }
