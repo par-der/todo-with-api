@@ -10,15 +10,17 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar.tsx';
 import { Button, Input, Label } from '@/shared/ui';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog.tsx';
 import { useNavigate } from 'react-router';
+import { User } from '@/shared/types/user.ts';
 
-type FormValues = { username: string; email: string };
+type FormValues = Pick<User, 'username' | 'email'>;
 type LoginChangeVal = { new_username: string; current_password: string };
 
 export const UserForm = () => {
   const { data: user, isLoading } = useCurrentUserQuery();
-  const { mutateAsync: updateUser } = useUpdateUserMutation();
-  const { mutate: uploadAvatar } = useUploadAvatarMutation();
-  const { mutate: setUsername } = useSetUsernameMutation();
+  const { mutateAsync: updateUser, isPending: updatingProfile } = useUpdateUserMutation();
+  const { mutateAsync: uploadAvatar, isPending: uploadingAvatar } = useUploadAvatarMutation();
+  const { mutateAsync: setUsername, isPending: updatingLogin } = useSetUsernameMutation();
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -27,18 +29,22 @@ export const UserForm = () => {
     handleSubmit,
     reset,
     watch,
-    formState: { isSubmitting: savingProfile },
-  } = useForm<FormValues>();
+    formState: { isSubmitting: rhfSubmittingProfile, isDirty: profileDirty },
+  } = useForm<FormValues>({
+    defaultValues: { username: '', email: '' },
+  });
 
   const {
     register: regLogin,
     handleSubmit: submitLogin,
     setValue: setLoginValue,
-    formState: { isSubmitting: savingLogin },
-  } = useForm<LoginChangeVal>();
+    formState: { isSubmitting: rhfSubmittingLogin },
+  } = useForm<LoginChangeVal>({
+    defaultValues: { new_username: '', current_password: '' },
+  });
 
   useEffect(() => {
-    if (user) reset({ username: user.username, email: user.email });
+    if (user) reset({ username: user.username ?? '', email: user.email ?? '' });
   }, [user, reset]);
 
   const onSaveProfile = async (values: FormValues) => {
@@ -47,19 +53,18 @@ export const UserForm = () => {
 
   const onChangeUsername = async (data: LoginChangeVal) => {
     await setUsername(data);
+    setOpen(false);
   };
 
-  if (isLoading) return <div className="text-center py-10">Loading...</div>;
+  const handleAvatarFile = async (file: File) => {
+    await uploadAvatar(file);
+  };
+
+  if (isLoading) return <div className="text-center py-10 text-sm text-muted-foreground">Loading...</div>;
 
   return (
-    <div className="mx-auto max-w-3xl p-6 lg:p-10">
-      <div className="mb-4">
-        <Button variant="ghost" onClick={() => navigate('/')}>
-          ← На главную
-        </Button>
-      </div>
-
-      <form onSubmit={handleSubmit(onSaveProfile)} className="space-y-6 rounded-2xl border bg-white p-6 shadow-sm">
+    <div className="w-full max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit(onSaveProfile)} className="space-y-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <Avatar className="h-24 w-24 shrink-0 mx-auto sm:mx-0">
             <AvatarImage src={user?.avatar || '/placeholder-avatar.svg'} />
@@ -75,7 +80,11 @@ export const UserForm = () => {
               type="file"
               accept="image/*"
               className="text-sm text-muted-foreground file:rounded-md file:bg-primary file:mr-4 file:px-4 file:text-white px-1 py-1"
-              onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void handleAvatarFile(f);
+              }}
+              disabled={uploadingAvatar}
             />
           </div>
         </div>
@@ -83,7 +92,7 @@ export const UserForm = () => {
         <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
           <div>
             <Label htmlFor="username" className="mb-1 block">
-              Имя
+              Имя (отображаемое)
             </Label>
             <Input id="username" {...register('username')} />
           </div>
@@ -93,7 +102,7 @@ export const UserForm = () => {
             className="mt-2 sm:mt-0"
             onClick={() => {
               setOpen(true);
-              setLoginValue('new_username', watch('username'));
+              setLoginValue('new_username', watch('username') ?? '');
             }}
           >
             Сменить логин
@@ -107,7 +116,11 @@ export const UserForm = () => {
           <Input id="email" type="email" {...register('email')} />
         </div>
 
-        <Button type="submit" disabled={savingProfile} className="w-full sm:w-auto">
+        <Button
+          type="submit"
+          disabled={rhfSubmittingProfile || updatingProfile || uploadingAvatar || !profileDirty}
+          className="w-full sm:w-auto"
+        >
           Сохранить профиль
         </Button>
       </form>
@@ -120,13 +133,13 @@ export const UserForm = () => {
 
           <form onSubmit={submitLogin(onChangeUsername)} className="space-y-4 pt-4">
             <div>
-              <Label htmlFor="new_username" className="pb-2">
+              <Label htmlFor="new_username" className="pb-2 block">
                 Новый логин
               </Label>
               <Input id="new_username" {...regLogin('new_username')} />
             </div>
             <div>
-              <Label htmlFor="current_password" className="pb-2">
+              <Label htmlFor="current_password" className="pb-2 block">
                 Пароль
               </Label>
               <Input
@@ -141,7 +154,7 @@ export const UserForm = () => {
               <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
                 Отмена
               </Button>
-              <Button type="submit" disabled={savingLogin}>
+              <Button type="submit" disabled={rhfSubmittingLogin || updatingLogin}>
                 Сменить
               </Button>
             </DialogFooter>

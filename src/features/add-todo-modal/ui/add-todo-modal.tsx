@@ -1,59 +1,41 @@
-import { Category, CATEGORY_LABELS, Todo, TodoFormData } from '@/entities/todo.ts';
-import { useUpdateTodoMutation } from '@/shared/services/mutations.ts';
+import { useAddTodoMutation } from '@/shared/services/mutations.ts';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
-import * as React from 'react';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog.tsx';
+import { Category, CATEGORY_LABELS, TodoFormData } from '@/entities/todo.ts';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Button, Input, Label } from '@/shared/ui';
-import { Calendar, Clock, Tag, X } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+import { Calendar, Clock, Tag } from 'lucide-react';
 import { Textarea } from '@/shared/ui/textarea.tsx';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select.tsx';
 
-interface EditTodoModalProps {
-  todo: Todo | null;
+interface AddTodoModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => {
-  const { mutate: updateTodo, isPending } = useUpdateTodoMutation();
+export const AddTodoModal = ({ isOpen, onClose }: AddTodoModalProps) => {
+  const { mutate: addTodo, isPending } = useAddTodoMutation();
   const { register, handleSubmit, watch, setValue, reset } = useForm<TodoFormData>({
     defaultValues: {
-      title: todo?.title || '',
-      description: todo?.description || '',
-      due_date: todo?.due_date || format(new Date(), 'yyyy-MM-dd'),
-      remind_at: todo?.remind_at || '',
-      category: todo?.category || 'HEALTH',
-      completed: todo?.completed || false,
+      title: '',
+      description: '',
+      due_date: format(new Date(), 'yyyy-MM-dd'),
+      remind_at: null as unknown as string,
+      category: 'HEALTH',
+      completed: false,
     },
   });
 
   const watchedCategory = watch('category');
 
-  React.useEffect(() => {
-    if (todo) {
-      reset({
-        title: todo.title,
-        description: todo.description,
-        due_date: todo.due_date,
-        remind_at: todo.remind_at || '',
-        category: todo.category,
-        completed: todo.completed,
-      });
-    }
-  }, [todo, reset]);
-
   const onSubmit = (formData: TodoFormData) => {
-    if (!todo) return;
-
-    const updateData = {
-      id: todo.id,
+    const submitData = {
       ...formData,
       remind_at: formData.remind_at || null,
     };
-
-    updateTodo(updateData, {
+    addTodo(submitData, {
       onSuccess: () => {
+        reset();
         onClose();
       },
     });
@@ -68,27 +50,28 @@ export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => 
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">Редактировать задачу</DialogTitle>
+          <DialogTitle className="flex items-center justify-between">Добавить новую задачу</DialogTitle>
+          <DialogDescription>Заполните форму и нажмите «Добавить».</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="edit-title" className="text-sm font-medium">
+            <Label htmlFor="add-title" className="text-sm font-medium">
               Название задачи
             </Label>
             <Input
-              id="edit-title"
+              id="add-title"
               {...register('title', { required: 'Название обязательно' })}
               placeholder="Введите название задачи"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-description" className="text-sm font-medium">
+            <Label htmlFor="add-description" className="text-sm font-medium">
               Описание
             </Label>
             <Textarea
-              id="edit-description"
+              id="add-description"
               {...register('description')}
               placeholder="Опишите задачу подробнее"
               className="min-h-[80px] text-wrap whitespace-pre-wrap"
@@ -97,19 +80,19 @@ export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-due-date" className="text-sm font-medium flex items-center gap-2">
+              <Label htmlFor="add-due-date" className="text-sm font-medium flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 Дата выполнения
               </Label>
-              <Input id="edit-due-date" type="date" {...register('due_date', { required: 'Дата обязательна' })} />
+              <Input id="add-due-date" type="date" {...register('due_date', { required: 'Дата обязательна' })} />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="edit-remind-at" className="text-sm font-medium flex items-center gap-2">
+              <Label htmlFor="add-remind-at" className="text-sm font-medium flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 Время напоминания
               </Label>
-              <Input id="edit-remind-at" type="time" {...register('remind_at')} />
+              <Input id="add-remind-at" type="time" {...register('remind_at')} />
             </div>
           </div>
 
@@ -137,7 +120,7 @@ export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => 
               Отмена
             </Button>
             <Button type="submit" disabled={isPending}>
-              {isPending ? 'Сохранение...' : 'Сохранить изменения'}
+              {isPending ? 'Добавление...' : 'Добавить задачу'}
             </Button>
           </DialogFooter>
         </form>

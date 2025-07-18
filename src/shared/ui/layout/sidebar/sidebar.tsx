@@ -1,6 +1,8 @@
-import { Calendar, ChevronLeft, Clock11, Search } from 'lucide-react';
+import { Calendar, ChevronLeft, Clock11, Files, Search, User, UserIcon } from 'lucide-react';
 import { NavLink } from 'react-router';
 import { NAVIGATION_ROUTES } from '../../../constants/routes.ts';
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar.tsx';
+import { useCurrentUserQuery } from '@/features/user-form/api/queries.ts';
 
 interface Props {
   isOpen: boolean;
@@ -8,10 +10,18 @@ interface Props {
 }
 
 export default function Sidebar({ isOpen, toggle }: Props) {
+  const { data: user, isLoading } = useCurrentUserQuery();
+  const displayName =
+    user?.first_name || user?.last_name
+      ? [user?.first_name, user?.last_name].filter(Boolean).join(' ')
+      : (user?.username ?? user?.email ?? 'Гость');
+
+  const avatarUrl = user?.avatar ?? '/logo.svg';
+
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-50 bg-zinc-50 text-gray-700 border-r border-zinc-50
-                  transition-[width] duration-300
+                  transition-[width] duration-300 flex flex-col
                   ${isOpen ? 'w-64' : 'w-16'}`}
     >
       <div className="flex items-center justify-between p-4">
@@ -37,12 +47,36 @@ export default function Sidebar({ isOpen, toggle }: Props) {
         </div>
       </div>
 
-      <nav className={`mt-4 px-2 flex flex-col gap-3`}>
-        {/*<SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Plus} label="Новый чат" isOpen={isOpen} />*/}
-        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Calendar} label="Todo" isOpen={isOpen} />
-        <SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Search} label="Поиск" isOpen={isOpen} />
+      <nav className="mt-4 px-2 flex flex-col gap-3 flex-1">
+        <SidebarButton to={NAVIGATION_ROUTES.HOME} icon={Files} label="Главная" isOpen={isOpen} />
+        {/*<SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Search} label="Поиск" isOpen={isOpen} />*/}
         <SidebarButton to={NAVIGATION_ROUTES.TODAY} icon={Clock11} label="Сегодня" isOpen={isOpen} />
       </nav>
+
+      <div className="mt-auto p-2">
+        <NavLink
+          to={NAVIGATION_ROUTES.USER}
+          className="flex items-center p-2 rounded hover:bg-zinc-100 transition-colors"
+        >
+          <div className="w-6 flex justify-center">
+            <Avatar className="h-6 w-6">
+              <AvatarImage src={avatarUrl} alt="Avatar" />
+              <AvatarFallback>
+                <UserIcon size={16} />
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <span
+            className={`
+              overflow-hidden whitespace-nowrap
+              transition-[max-width,opacity,margin-left] duration-300
+              ${isOpen ? 'ml-3 max-w-xs opacity-100' : 'ml-0 max-w-0 opacity-0'}
+            `}
+          >
+            {isLoading ? '…' : displayName}
+          </span>
+        </NavLink>
+      </div>
     </aside>
   );
 }

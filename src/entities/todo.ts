@@ -58,3 +58,12 @@ export const CATEGORY_COLORS: Record<Category, string> = {
   MENTAL_HEALTH: 'bg-purple-100 text-purple-600 border-purple-200',
   STUDY: 'bg-orange-100 text-orange-600 border-orange-200',
 };
+
+export interface TodoStats {
+  total: number;
+  completed: number;
+  pending: number;
+  overdue: number;
+  today: number;
+  by_category: Record<string, number>;
+}

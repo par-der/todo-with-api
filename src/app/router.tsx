@@ -5,7 +5,6 @@ import { lazy } from 'react';
 import TodayPage from '@/pages/today-page/today-page.tsx';
 
 const LoginPage = lazy(() => import('@/pages/login-page/login-page'));
-const AddTodoPage = lazy(() => import('@/pages/add-todo-page/add-todo-page'));
 const UserPage = lazy(() => import('@/pages/user-page/user-page'));
 const AuthPage = lazy(() => import('@/pages/auth-page/auth-page.tsx'));
 const HomePage = lazy(() => import('@/pages/home-page/home-page'));
@@ -17,10 +16,6 @@ export const router = createBrowserRouter([
       {
         path: NAVIGATION_ROUTES.HOME,
         element: <HomePage />,
-      },
-      {
-        path: NAVIGATION_ROUTES.ADD_TODO,
-        element: <AddTodoPage />,
       },
       {
         path: NAVIGATION_ROUTES.USER,

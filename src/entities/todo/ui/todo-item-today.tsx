@@ -1,7 +1,7 @@
 import { Todo, CATEGORY_COLORS, CATEGORY_LABELS } from '@/entities/todo.ts';
 import { Checkbox } from '@/shared/ui';
 import { Button } from '@/shared/ui/button';
-import { format, parse } from 'date-fns';
+import { format, isValid, parse, parseISO } from 'date-fns';
 import { ClockIcon, Edit2, Trash2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Badge } from '@/shared/ui/badge.tsx';
@@ -14,7 +14,16 @@ interface Props {
 }
 
 export const TodoItemToday = ({ todo, onToggle, onEdit, onDelete }: Props) => {
-  const timeLabel = todo.remind_at && format(parse(todo.remind_at, 'HH:mm:ss', new Date()), 'HH:mm');
+  let timeLabel: string | null = null;
+
+  if (todo.remind_at) {
+    const parsed = parse(todo.remind_at, 'HH:mm:ss', new Date());
+    const safeDate = isValid(parsed) ? parsed : parseISO(`1970-01-01T${todo.remind_at}`);
+
+    if (isValid(safeDate)) {
+      timeLabel = format(safeDate, 'HH:mm');
+    }
+  }
 
   return (
     <li className="group flex items-start gap-3 py-4 px-3 hover:bg-gray-50 rounded-lg transition-colors">

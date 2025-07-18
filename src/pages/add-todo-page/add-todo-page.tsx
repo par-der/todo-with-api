@@ -14,20 +14,16 @@ const AddTodoPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen">
       <Sidebar isOpen={sidebarOpen} toggle={toggleSidebar} />
 
       <main
-        className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'} h-screen overflow-y-auto p-6 w-full`}
+        className={`transition-all duration-300 ${
+          sidebarOpen ? 'ml-64' : 'ml-16'
+        } h-screen overflow-y-auto w-full px-4 sm:px-6 md:px-8 py-6`}
       >
-        <div className="max-w-2xl mx-auto">
-          <header className="flex items-center gap-4 mb-6">
-            <Link to={NAVIGATION_ROUTES.TODAY}>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Назад
-              </Button>
-            </Link>
+        <div className="mx-auto w-full max-w-xl md:max-w-2xl">
+          <header className="flex items-center gap-4 mb-8">
             <h1 className="text-2xl font-bold text-gray-900">Добавить новую задачу</h1>
           </header>
 
