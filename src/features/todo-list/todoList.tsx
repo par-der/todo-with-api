@@ -75,8 +75,8 @@ export const TodoList: React.FC<TodoListProps> = ({ selectedCategory }) => {
   }, [selectedCategory, items]);
 
   useEffect(() => {
-    if (page !== 1) setPage(1);
-  }, [selectedCategory, page, setPage]);
+    setPage(1);
+  }, [selectedCategory]);
 
   if (isLoading) {
     return (

@@ -48,9 +48,10 @@ export const AddTodoModal = ({ isOpen, onClose }: AddTodoModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px]" aria-describedby={undefined}>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">Добавить новую задачу</DialogTitle>
+          <DialogDescription>Заполните форму и нажмите «Добавить».</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
