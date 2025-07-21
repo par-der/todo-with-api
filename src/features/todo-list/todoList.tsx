@@ -1,12 +1,11 @@
 import { useGetTodosQuery } from '@/shared/services/queries';
 import { usePaginationParams } from '@/shared/lib/usePaginationParams';
 import { mapTodos } from '@/shared/lib/todo-utils';
-import { TodoItem } from '@/entities/todo/ui/todo-item';
 import { Pagination } from '@/shared/ui/pagination';
 import { Category, CATEGORY_LABELS, Todo } from '@/entities/todo.ts';
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { useDeleteTodoMutation, useTodoSetCompletedMutation } from '@/shared/services/mutations.ts';
+import { useDeleteTodoMutation, useToggleCompletedMutation } from '@/shared/services/mutations.ts';
 import { TodoItemToday } from '@/entities/todo/ui/todo-item-today.tsx';
 import { EditTodoModal } from '@/features/edit-todo-modal/ui/edit-todo-modal.tsx';
 import {
@@ -33,7 +32,7 @@ export const TodoList: React.FC<TodoListProps> = ({ selectedCategory }) => {
   const { data: todos, isError, isLoading, error } = useGetTodosQuery(page, pageSize, selectedCategory);
   const { items, count, totalPages } = mapTodos(todos, pageSize);
 
-  const { mutate: toggleCompleted } = useTodoSetCompletedMutation();
+  const { mutate: toggleCompleted } = useToggleCompletedMutation();
   const { mutate: deleteTodo } = useDeleteTodoMutation();
 
   const handleToggle = (id: number, completed: boolean) => {
@@ -72,7 +71,7 @@ export const TodoList: React.FC<TodoListProps> = ({ selectedCategory }) => {
         ease: 'power2.out',
       },
     );
-  }, [selectedCategory, items]);
+  }, [selectedCategory]);
 
   useEffect(() => {
     setPage(1);

@@ -141,9 +141,6 @@ export const useToggleCompletedMutation = () => {
     mutationFn: (vars: { id: number; completed: boolean }) => updateTodoCompleted(vars.id, vars.completed),
 
     async onMutate({ id, completed }): Promise<Ctx> {
-      await qc.cancelQueries({ queryKey: ['todos'] });
-      await qc.cancelQueries({ queryKey: ['todo-stats'] });
-
       const prevPage = qc.getQueryData<TodoQueries>(['todos', FIRST_PAGE, PAGE_SIZE, null]);
       const prevStats = qc.getQueryData<TodoStats>(['todo-stats']);
 
@@ -169,11 +166,6 @@ export const useToggleCompletedMutation = () => {
       if (ctx?.prevPage) qc.setQueryData(['todos', FIRST_PAGE, PAGE_SIZE, null], ctx.prevPage);
       if (ctx?.prevStats) qc.setQueryData(['todo-stats'], ctx.prevStats);
       toast.error('Не удалось изменить статус задачи');
-    },
-
-    onSettled() {
-      qc.invalidateQueries({ queryKey: ['todos'] });
-      qc.invalidateQueries({ queryKey: ['todo-stats'] });
     },
   });
 };
