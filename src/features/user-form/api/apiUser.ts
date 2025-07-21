@@ -6,7 +6,9 @@ export const getCurrentUser = async (): Promise<User> => {
   return data;
 };
 
-export const updateCurrentUser = async (payload: Partial<Pick<User, 'username' | 'email'>>): Promise<User> => {
+export const updateCurrentUser = async (
+  payload: Partial<Pick<User, 'first_name' | 'last_name' | 'email'>>,
+): Promise<User> => {
   const { data } = await apiClient.patch('auth/users/me/', payload);
   return data;
 };

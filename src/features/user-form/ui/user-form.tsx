@@ -9,10 +9,9 @@ import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar.tsx';
 import { Button, Input, Label } from '@/shared/ui';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog.tsx';
-import { useNavigate } from 'react-router';
 import { User } from '@/shared/types/user.ts';
 
-type FormValues = Pick<User, 'username' | 'email'>;
+type FormValues = Pick<User, 'first_name' | 'last_name' | 'email'>;
 type LoginChangeVal = { new_username: string; current_password: string };
 
 export const UserForm = () => {
@@ -22,29 +21,26 @@ export const UserForm = () => {
   const { mutateAsync: setUsername, isPending: updatingLogin } = useSetUsernameMutation();
 
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     reset,
-    watch,
     formState: { isSubmitting: rhfSubmittingProfile, isDirty: profileDirty },
   } = useForm<FormValues>({
-    defaultValues: { username: '', email: '' },
+    defaultValues: { first_name: '', last_name: '', email: '' },
   });
 
   const {
     register: regLogin,
     handleSubmit: submitLogin,
-    setValue: setLoginValue,
     formState: { isSubmitting: rhfSubmittingLogin },
   } = useForm<LoginChangeVal>({
     defaultValues: { new_username: '', current_password: '' },
   });
 
   useEffect(() => {
-    if (user) reset({ username: user.username ?? '', email: user.email ?? '' });
+    if (user) reset({ first_name: user.first_name ?? '', last_name: user.last_name ?? '', email: user.email ?? '' });
   }, [user, reset]);
 
   const onSaveProfile = async (values: FormValues) => {
@@ -89,24 +85,35 @@ export const UserForm = () => {
           </div>
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
-          <div>
-            <Label htmlFor="username" className="mb-1 block">
-              Имя (отображаемое)
-            </Label>
-            <Input id="username" {...register('username')} />
+        <div className="grid gap-2">
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="first_name" className="mb-1 block">
+                Имя
+              </Label>
+              <Input id="first_name" {...register('first_name')} />
+            </div>
+
+            <div>
+              <Label htmlFor="last_name" className="mb-1 block">
+                Фамилия
+              </Label>
+              <Input id="last_name" {...register('last_name')} />
+            </div>
           </div>
-          <Button
-            type="button"
-            variant="secondary"
-            className="mt-2 sm:mt-0"
-            onClick={() => {
-              setOpen(true);
-              setLoginValue('new_username', watch('username') ?? '');
-            }}
-          >
-            Сменить логин
-          </Button>
+
+          {/*                                              тут находится кнопка смены логина                                           */}
+          {/*<Button*/}
+          {/*  type="button"*/}
+          {/*  variant="secondary"*/}
+          {/*  className="mt-2 sm:mt-0"*/}
+          {/*  onClick={() => {*/}
+          {/*    setOpen(true);*/}
+          {/*    setLoginValue('new_username', user?.username ?? '');*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  Сменить логин*/}
+          {/*</Button>*/}
         </div>
 
         <div>
