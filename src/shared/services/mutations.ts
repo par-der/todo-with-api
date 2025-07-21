@@ -145,17 +145,23 @@ export const useToggleCompletedMutation = () => {
       const prevStats = qc.getQueryData<TodoStats>(['todo-stats']);
 
       if (prevPage) {
-        qc.setQueryData<TodoQueries>(['todos', FIRST_PAGE, PAGE_SIZE, null], {
-          ...prevPage,
-          results: prevPage.results.map((t) => (t.id === id ? { ...t, completed } : t)),
+        qc.setQueriesData<TodoQueries>({ queryKey: ['todos'] }, (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            results: old.results.map((t) => (t.id === id ? { ...t, completed } : t)),
+          };
         });
       }
 
       if (prevStats) {
-        qc.setQueryData<TodoStats>(['todo-stats'], {
-          ...prevStats,
-          completed: completed ? prevStats.completed + 1 : prevStats.completed - 1,
-          pending: completed ? prevStats.pending - 1 : prevStats.pending + 1,
+        qc.setQueryData<TodoStats>(['todo-stats'], (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            completed: completed ? old.completed + 1 : old.completed - 1,
+            pending: completed ? old.pending - 1 : old.pending + 1,
+          };
         });
       }
 
