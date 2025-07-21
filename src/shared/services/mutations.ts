@@ -5,6 +5,7 @@ import { Todo, TodoQueries, TodosResponse, TodoStats, TodoUpdateData } from '@/e
 import { useAuthStore } from '@/stores/auth-store.ts';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const FIRST_PAGE = 1;
 const PAGE_SIZE = 15;
@@ -240,7 +241,12 @@ export const useUpdateTodoMutation = () => {
 
     onError(_e, _v, ctx) {
       if (ctx?.prevPage) qc.setQueryData(['todos', FIRST_PAGE, PAGE_SIZE, null], ctx.prevPage);
-      toast.error('Ошибка при обновлении задачи');
+      if (axios.isAxiosError(_e) && _e.response?.status === 400) {
+        const msg = _e.response.data?.due_date?.[0] ?? 'Дата должна быть сегодня или позже';
+        toast.error(msg);
+      } else {
+        toast.error('Не удалось обновить задачу');
+      }
     },
 
     onSuccess() {
