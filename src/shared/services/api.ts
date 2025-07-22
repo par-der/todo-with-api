@@ -3,11 +3,7 @@ import { apiClient, mainConfig } from './axios.ts';
 import { Login, LogoutResponse, Register } from '@/entities/auth.ts';
 import { Category, Todo, TodoQueries, TodosResponse, TodoStats, TodoUpdateData } from '@/entities/todo';
 
-export const getTodos = async (page = 1, pageSize = 15, category?: Category | null): Promise<TodoQueries> => {
-  const params: any = { page, page_size: pageSize };
-  if (category) {
-    params.category = category;
-  }
+export const getTodos = async (params: Record<string, string | number>): Promise<TodoQueries> => {
   const { data } = await apiClient.get('todos/', { params });
   return data;
 };
@@ -19,7 +15,7 @@ export const updateTodoCompleted = async (id: number, completed: boolean): Promi
 
 export const updateTodo = async (updateData: TodoUpdateData): Promise<Todo> => {
   const { id, ...data } = updateData;
-  const { data: response } = await apiClient.put(`todos/${id}/`, data);
+  const { data: response } = await apiClient.patch(`todos/${id}/`, data);
   return response;
 };
 

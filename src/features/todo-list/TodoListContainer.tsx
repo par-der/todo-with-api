@@ -1,14 +1,24 @@
-import { Loader } from 'lucide-react';
-import { usePaginationParams } from '@/shared/lib/usePaginationParams.ts';
-import { useGetTodosQuery } from '@/shared/services/queries.ts';
 import { TodoList } from '@/features/todo-list/todoList.tsx';
+import { useGetTodosQuery } from '@/shared/services/queries.ts';
 
-export default function TodoListContainer() {
-  const { page, pageSize } = usePaginationParams(15);
-  const { data, isError, isLoading, error } = useGetTodosQuery(page, pageSize);
+export default function TodoListContainer({
+  params,
+  setPage,
+}: {
+  params: Record<string, string | number>;
+  setPage: (p: number) => void;
+}) {
+  const { data, isLoading, isError, error } = useGetTodosQuery(params);
 
-  if (isLoading) return <Loader />;
-  if (isError) return <div>{error?.message || 'что то не так'}</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div className="text-red-500">{error?.message}</div>;
 
-  return <TodoList todos={data ?? []} />;
+  return (
+    <TodoList
+      todos={data?.results ?? []}
+      total={data?.count ?? 0}
+      pageCount={Math.ceil((data?.count ?? 0) / Number(params.page_size))}
+      onPageChange={setPage}
+    />
+  );
 }

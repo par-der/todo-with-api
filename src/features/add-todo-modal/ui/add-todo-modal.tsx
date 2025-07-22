@@ -7,6 +7,7 @@ import { Button, Input, Label } from '@/shared/ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Calendar, Clock, Tag } from 'lucide-react';
 import { Textarea } from '@/shared/ui/textarea.tsx';
+import { toast } from 'react-toastify';
 
 interface AddTodoModalProps {
   isOpen: boolean;

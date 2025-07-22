@@ -18,18 +18,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/shared/ui/alert-dialog.tsx';
+import { useTodoParams } from '@/shared/lib/buildParams.ts';
 
 interface TodoListProps {
   selectedCategory?: Category | null;
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  completed?: boolean | null;
 }
 
-export const TodoList: React.FC<TodoListProps> = ({ selectedCategory }) => {
+export const TodoList: React.FC<TodoListProps> = ({ selectedCategory, dateFrom, dateTo, completed }) => {
   const { page, pageSize, setPage } = usePaginationParams(15);
   const listRef = useRef<HTMLDivElement>(null);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<number | null>(null);
+  const filtersReady = dateFrom !== undefined && dateTo !== undefined && completed !== undefined;
+  const params = useTodoParams(page, pageSize, selectedCategory);
 
-  const { data: todos, isError, isLoading, error } = useGetTodosQuery(page, pageSize, selectedCategory);
+  const { data: todos, isLoading, isError } = useGetTodosQuery(params);
   const { items, count, totalPages } = mapTodos(todos, pageSize);
 
   const { mutate: toggleCompleted } = useToggleCompletedMutation();
@@ -75,7 +81,7 @@ export const TodoList: React.FC<TodoListProps> = ({ selectedCategory }) => {
 
   useEffect(() => {
     setPage(1);
-  }, [selectedCategory]);
+  }, [selectedCategory, dateFrom, dateTo, completed]);
 
   if (isLoading) {
     return (
