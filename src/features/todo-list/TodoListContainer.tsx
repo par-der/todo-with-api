@@ -16,7 +16,6 @@ export default function TodoListContainer({
   return (
     <TodoList
       todos={data?.results ?? []}
-      total={data?.count ?? 0}
       pageCount={Math.ceil((data?.count ?? 0) / Number(params.page_size))}
       onPageChange={setPage}
     />

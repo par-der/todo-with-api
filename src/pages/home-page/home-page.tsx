@@ -15,10 +15,10 @@ const HomePage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const { data: todoStats } = useGetTodoStatsQuery();
-  const toggleSidebar = () => setSidebarOpen((p) => !p);
   const { page, pageSize, setPage } = usePaginationParams(15);
   const params = useTodoParams(page, pageSize, selectedCategory);
+  const { data: todoStats } = useGetTodoStatsQuery();
+  const toggleSidebar = () => setSidebarOpen((p) => !p);
 
   const handleCategorySelect = (category: Category | null) => {
     setSelectedCategory(category);
@@ -44,7 +44,7 @@ const HomePage = () => {
           selectedCategory={selectedCategory}
           todoStats={todoStats}
         />
-        <TodoList selectedCategory={selectedCategory} onCategorySelect={setSelectedCategory} params={params} />
+        <TodoList selectedCategory={selectedCategory} onPageChange={setPage} params={params} />
 
         <FloatingActionButton onClick={handleAddTodo} />
         <AddTodoModal isOpen={isAddModalOpen} onClose={handleCloseAddModal} />

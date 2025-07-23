@@ -6,12 +6,8 @@ import clsx from 'clsx';
 import { format } from 'date-fns';
 
 export const TodoFilter = () => {
-  const { dateFrom, dateTo, completed, patch } = useFilterStore((s) => ({
-    dateFrom: s.dateFrom,
-    dateTo: s.dateTo,
-    completed: s.completed,
-    patch: s.patch,
-  }));
+  const { dateFrom, dateTo, completed, set } = useFilterStore();
+  const patch = (obj: Parameters<typeof set>[0]) => set(obj);
 
   return (
     <div className="flex flex-wrap items-center gap-3 mb-6">
