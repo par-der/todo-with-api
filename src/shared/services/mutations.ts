@@ -139,39 +139,70 @@ export const useToggleCompletedMutation = () => {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: (vars: { id: number; completed: boolean }) => updateTodoCompleted(vars.id, vars.completed),
+    mutationFn: ({ id, completed }: { id: number; completed: boolean }) => updateTodoCompleted(id, completed),
 
-    async onMutate({ id, completed }): Promise<Ctx> {
-      const prevPage = qc.getQueryData<TodoQueries>(['todos', FIRST_PAGE, PAGE_SIZE, null]);
-      const prevStats = qc.getQueryData<TodoStats>(['todo-stats']);
+    onMutate: async ({ id, completed }) => {
+      await qc.cancelQueries({ queryKey: ['todos'] });
+      await qc.cancelQueries({ queryKey: ['todo-stats'] });
 
-      if (prevPage) {
-        qc.setQueriesData<TodoQueries>({ queryKey: ['todos'] }, (old) => {
-          if (!old) return old;
-          return {
-            ...old,
-            results: old.results.map((t) => (t.id === id ? { ...t, completed } : t)),
-          };
-        });
-      }
+      const previousTodosQueries = qc.getQueriesData({ queryKey: ['todos'] });
+      const previousStats = qc.getQueryData(['todo-stats']);
 
-      if (prevStats) {
-        qc.setQueryData<TodoStats>(['todo-stats'], (old) => {
-          if (!old) return old;
-          return {
-            ...old,
-            completed: completed ? old.completed + 1 : old.completed - 1,
-            pending: completed ? old.pending - 1 : old.pending + 1,
-          };
-        });
-      }
+      qc.setQueriesData<TodoQueries>({ queryKey: ['todos'] }, (oldData) => {
+        if (!oldData) return oldData;
 
-      return { prevPage, prevStats };
+        return {
+          ...oldData,
+          results: oldData.results.map((todo) => (todo.id === id ? { ...todo, completed } : todo)),
+        };
+      });
+
+      qc.setQueryData<TodoStats>(['todo-stats'], (oldStats) => {
+        if (!oldStats) return oldStats;
+
+        return {
+          ...oldStats,
+          completed: completed ? oldStats.completed + 1 : oldStats.completed - 1,
+          pending: completed ? oldStats.pending - 1 : oldStats.pending + 1,
+        };
+      });
+
+      return { previousTodosQueries, previousStats };
     },
 
-    onError(_e, _v, ctx) {
-      if (ctx?.prevPage) qc.setQueryData(['todos', FIRST_PAGE, PAGE_SIZE, null], ctx.prevPage);
-      if (ctx?.prevStats) qc.setQueryData(['todo-stats'], ctx.prevStats);
+    onError: (err, variables, context) => {
+      if (context?.previousTodosQueries) {
+        context.previousTodosQueries.forEach(([queryKey, data]) => {
+          qc.setQueryData(queryKey, data);
+        });
+      }
+
+      if (context?.previousStats) {
+        qc.setQueryData(['todo-stats'], context.previousStats);
+      }
+
+      toast.error('Не удалось изменить статус задачи');
+    },
+
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['todos'] });
+      qc.invalidateQueries({ queryKey: ['todo-stats'] });
+    },
+  });
+};
+
+export const useToggleCompletedMutationSimple = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, completed }: { id: number; completed: boolean }) => updateTodoCompleted(id, completed),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ['todo-stats'] });
+    },
+
+    onError: () => {
       toast.error('Не удалось изменить статус задачи');
     },
   });
