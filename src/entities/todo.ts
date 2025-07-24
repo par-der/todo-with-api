@@ -67,3 +67,10 @@ export interface TodoStats {
   today: number;
   by_category: Record<string, number>;
 }
+
+export interface TodoListPublicProps {
+  todos: Todo[];
+  total: number;
+  pageCount: number;
+  onPageChange: (p: number) => void;
+}

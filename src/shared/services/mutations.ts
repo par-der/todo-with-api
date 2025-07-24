@@ -5,6 +5,7 @@ import { Todo, TodoQueries, TodosResponse, TodoStats, TodoUpdateData } from '@/e
 import { useAuthStore } from '@/stores/auth-store.ts';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const FIRST_PAGE = 1;
 const PAGE_SIZE = 15;
@@ -138,42 +139,71 @@ export const useToggleCompletedMutation = () => {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: (vars: { id: number; completed: boolean }) => updateTodoCompleted(vars.id, vars.completed),
+    mutationFn: ({ id, completed }: { id: number; completed: boolean }) => updateTodoCompleted(id, completed),
 
-    async onMutate({ id, completed }): Promise<Ctx> {
+    onMutate: async ({ id, completed }) => {
       await qc.cancelQueries({ queryKey: ['todos'] });
       await qc.cancelQueries({ queryKey: ['todo-stats'] });
 
-      const prevPage = qc.getQueryData<TodoQueries>(['todos', FIRST_PAGE, PAGE_SIZE, null]);
-      const prevStats = qc.getQueryData<TodoStats>(['todo-stats']);
+      const previousTodosQueries = qc.getQueriesData({ queryKey: ['todos'] });
+      const previousStats = qc.getQueryData(['todo-stats']);
 
-      if (prevPage) {
-        qc.setQueryData<TodoQueries>(['todos', FIRST_PAGE, PAGE_SIZE, null], {
-          ...prevPage,
-          results: prevPage.results.map((t) => (t.id === id ? { ...t, completed } : t)),
-        });
-      }
+      qc.setQueriesData<TodoQueries>({ queryKey: ['todos'] }, (oldData) => {
+        if (!oldData) return oldData;
 
-      if (prevStats) {
-        qc.setQueryData<TodoStats>(['todo-stats'], {
-          ...prevStats,
-          completed: completed ? prevStats.completed + 1 : prevStats.completed - 1,
-          pending: completed ? prevStats.pending - 1 : prevStats.pending + 1,
-        });
-      }
+        return {
+          ...oldData,
+          results: oldData.results.map((todo) => (todo.id === id ? { ...todo, completed } : todo)),
+        };
+      });
 
-      return { prevPage, prevStats };
+      qc.setQueryData<TodoStats>(['todo-stats'], (oldStats) => {
+        if (!oldStats) return oldStats;
+
+        return {
+          ...oldStats,
+          completed: completed ? oldStats.completed + 1 : oldStats.completed - 1,
+          pending: completed ? oldStats.pending - 1 : oldStats.pending + 1,
+        };
+      });
+
+      return { previousTodosQueries, previousStats };
     },
 
-    onError(_e, _v, ctx) {
-      if (ctx?.prevPage) qc.setQueryData(['todos', FIRST_PAGE, PAGE_SIZE, null], ctx.prevPage);
-      if (ctx?.prevStats) qc.setQueryData(['todo-stats'], ctx.prevStats);
+    onError: (err, variables, context) => {
+      if (context?.previousTodosQueries) {
+        context.previousTodosQueries.forEach(([queryKey, data]) => {
+          qc.setQueryData(queryKey, data);
+        });
+      }
+
+      if (context?.previousStats) {
+        qc.setQueryData(['todo-stats'], context.previousStats);
+      }
+
       toast.error('Не удалось изменить статус задачи');
     },
 
-    onSettled() {
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['todos'] });
       qc.invalidateQueries({ queryKey: ['todo-stats'] });
+    },
+  });
+};
+
+export const useToggleCompletedMutationSimple = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, completed }: { id: number; completed: boolean }) => updateTodoCompleted(id, completed),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ['todo-stats'] });
+    },
+
+    onError: () => {
+      toast.error('Не удалось изменить статус задачи');
     },
   });
 };
@@ -242,7 +272,12 @@ export const useUpdateTodoMutation = () => {
 
     onError(_e, _v, ctx) {
       if (ctx?.prevPage) qc.setQueryData(['todos', FIRST_PAGE, PAGE_SIZE, null], ctx.prevPage);
-      toast.error('Ошибка при обновлении задачи');
+      if (axios.isAxiosError(_e) && _e.response?.status === 400) {
+        const msg = _e.response.data?.due_date?.[0] ?? 'Дата должна быть сегодня или позже';
+        toast.error(msg);
+      } else {
+        toast.error('Не удалось обновить задачу');
+      }
     },
 
     onSuccess() {

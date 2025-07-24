@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import * as React from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog.tsx';
 import { Button, Input, Label } from '@/shared/ui';
-import { Calendar, Clock, Tag, X } from 'lucide-react';
+import { Calendar, Clock, Tag } from 'lucide-react';
 import { Textarea } from '@/shared/ui/textarea.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select.tsx';
 
@@ -17,7 +17,14 @@ interface EditTodoModalProps {
 
 export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => {
   const { mutate: updateTodo, isPending } = useUpdateTodoMutation();
-  const { register, handleSubmit, watch, setValue, reset } = useForm<TodoFormData>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<TodoFormData>({
     defaultValues: {
       title: todo?.title || '',
       description: todo?.description || '',
@@ -29,6 +36,7 @@ export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => 
   });
 
   const watchedCategory = watch('category');
+  const todayISO = format(new Date(), 'yyyy-MM-dd');
 
   React.useEffect(() => {
     if (todo) {
@@ -101,7 +109,15 @@ export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => 
                 <Calendar className="w-4 h-4" />
                 Дата выполнения
               </Label>
-              <Input id="edit-due-date" type="date" {...register('due_date', { required: 'Дата обязательна' })} />
+              <Input
+                id="edit-due-date"
+                type="date"
+                {...register('due_date', {
+                  required: 'Дата обязательна',
+                  validate: (v) => v >= todayISO || 'Дата должна быть сегодня или позже',
+                })}
+              />
+              {errors.due_date && <p className="text-xs text-red-500">{errors.due_date.message}</p>}
             </div>
 
             <div className="space-y-2">

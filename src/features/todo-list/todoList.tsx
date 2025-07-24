@@ -1,12 +1,15 @@
 import { useGetTodosQuery } from '@/shared/services/queries';
 import { usePaginationParams } from '@/shared/lib/usePaginationParams';
 import { mapTodos } from '@/shared/lib/todo-utils';
-import { TodoItem } from '@/entities/todo/ui/todo-item';
 import { Pagination } from '@/shared/ui/pagination';
 import { Category, CATEGORY_LABELS, Todo } from '@/entities/todo.ts';
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { useDeleteTodoMutation, useTodoSetCompletedMutation } from '@/shared/services/mutations.ts';
+import {
+  useDeleteTodoMutation,
+  useToggleCompletedMutation,
+  useToggleCompletedMutationSimple,
+} from '@/shared/services/mutations.ts';
 import { TodoItemToday } from '@/entities/todo/ui/todo-item-today.tsx';
 import { EditTodoModal } from '@/features/edit-todo-modal/ui/edit-todo-modal.tsx';
 import {
@@ -22,18 +25,22 @@ import {
 
 interface TodoListProps {
   selectedCategory?: Category | null;
+  onPageChange: (page: number) => void;
+  params: Record<string, string | number>;
 }
 
-export const TodoList: React.FC<TodoListProps> = ({ selectedCategory }) => {
+export const TodoList: React.FC<TodoListProps> = ({ selectedCategory, onPageChange, params }) => {
   const { page, pageSize, setPage } = usePaginationParams(15);
   const listRef = useRef<HTMLDivElement>(null);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<number | null>(null);
+  // const filtersReady = dateFrom !== undefined && dateTo !== undefined && completed !== undefined;
+  // const params = useTodoParams(page, pageSize, selectedCategory);
 
-  const { data: todos, isError, isLoading, error } = useGetTodosQuery(page, pageSize, selectedCategory);
+  const { data: todos, isLoading, isError } = useGetTodosQuery(params);
   const { items, count, totalPages } = mapTodos(todos, pageSize);
 
-  const { mutate: toggleCompleted } = useTodoSetCompletedMutation();
+  const { mutate: toggleCompleted } = useToggleCompletedMutationSimple();
   const { mutate: deleteTodo } = useDeleteTodoMutation();
 
   const handleToggle = (id: number, completed: boolean) => {
@@ -72,11 +79,12 @@ export const TodoList: React.FC<TodoListProps> = ({ selectedCategory }) => {
         ease: 'power2.out',
       },
     );
-  }, [selectedCategory, items]);
+  }, [selectedCategory]);
 
   useEffect(() => {
     setPage(1);
-  }, [selectedCategory]);
+    onPageChange(1);
+  }, [selectedCategory, params.date_from, params.date_to, params.completed]);
 
   if (isLoading) {
     return (
@@ -134,7 +142,14 @@ export const TodoList: React.FC<TodoListProps> = ({ selectedCategory }) => {
 
             {totalPages > 1 && (
               <div className="mt-6">
-                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={(newPage) => {
+                    setPage(newPage);
+                    onPageChange(newPage);
+                  }}
+                />
               </div>
             )}
           </>
