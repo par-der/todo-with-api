@@ -1,7 +1,16 @@
 import axios from 'axios';
 import { apiClient, mainConfig } from './axios.ts';
 import { Login, LogoutResponse, Register } from '@/entities/auth.ts';
-import { Category, Todo, TodoQueries, TodosResponse, TodoStats, TodoUpdateData } from '@/entities/todo';
+import {
+  PaginatedResponse,
+  Todo,
+  TodoAdmin,
+  TodoQueries,
+  TodosResponse,
+  TodoStats,
+  TodoUpdateData,
+} from '@/entities/todo';
+import { CurrentUser } from '@/shared/types/user.ts';
 
 export const getTodos = async (params: Record<string, string | number>): Promise<TodoQueries> => {
   const { data } = await apiClient.get('todos/', { params });
@@ -43,5 +52,15 @@ export const logoutApi = async (): Promise<LogoutResponse> => {
 
 export const getTodosStats = async (): Promise<TodoStats> => {
   const { data } = await apiClient.get('todos/stats/');
+  return data;
+};
+
+export const getAdminTodos = async (params: Record<string, number>) => {
+  const { data } = await apiClient.get<PaginatedResponse<TodoAdmin[]>>('admin/todos/', { params });
+  return data;
+};
+
+export const getCurrentUser = async (): Promise<CurrentUser> => {
+  const { data } = await apiClient.get<CurrentUser>('auth/users/me/');
   return data;
 };

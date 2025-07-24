@@ -17,3 +17,13 @@ export interface UserStats {
   pendingTodos: number;
   todayTodos: number;
 }
+
+export interface CurrentUser {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  avatar: string | null;
+  is_staff: boolean;
+}

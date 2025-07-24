@@ -74,3 +74,11 @@ export interface TodoListPublicProps {
   pageCount: number;
   onPageChange: (p: number) => void;
 }
+
+export interface TodoAdmin {
+  todos: Todo[];
+  user: number;
+  user_username: string;
+  user_email: string;
+  user_is_staff: boolean;
+}

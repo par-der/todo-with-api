@@ -1,4 +1,4 @@
-import { Calendar, ChevronLeft, Clock11, Files, Search, User, UserIcon } from 'lucide-react';
+import { Calendar, ChevronLeft, Clock11, Files, Search, Shield, User, UserIcon } from 'lucide-react';
 import { NavLink } from 'react-router';
 import { NAVIGATION_ROUTES } from '../../../constants/routes.ts';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar.tsx';
@@ -48,6 +48,7 @@ export default function Sidebar({ isOpen, toggle }: Props) {
       </div>
 
       <nav className="mt-4 px-2 flex flex-col gap-3 flex-1">
+        {user?.is_staff && <SidebarButton to={NAVIGATION_ROUTES.ADMIN} icon={Shield} label="Админка" isOpen={isOpen} />}{' '}
         <SidebarButton to={NAVIGATION_ROUTES.HOME} icon={Files} label="Главная" isOpen={isOpen} />
         {/*<SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Search} label="Поиск" isOpen={isOpen} />*/}
         <SidebarButton to={NAVIGATION_ROUTES.TODAY} icon={Clock11} label="Сегодня" isOpen={isOpen} />

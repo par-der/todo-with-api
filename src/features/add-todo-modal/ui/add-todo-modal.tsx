@@ -12,9 +12,10 @@ import { toast } from 'react-toastify';
 interface AddTodoModalProps {
   isOpen: boolean;
   onClose: () => void;
+  asAdmin?: boolean;
 }
 
-export const AddTodoModal = ({ isOpen, onClose }: AddTodoModalProps) => {
+export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalProps) => {
   const { mutate: addTodo, isPending } = useAddTodoMutation();
   const { register, handleSubmit, watch, setValue, reset } = useForm<TodoFormData>({
     defaultValues: {
