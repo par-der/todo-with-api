@@ -5,6 +5,7 @@ import {
   PaginatedResponse,
   Todo,
   TodoAdmin,
+  TodoFormData,
   TodoQueries,
   TodosResponse,
   TodoStats,
@@ -60,7 +61,16 @@ export const getAdminTodos = async (params: Record<string, number>) => {
   return data;
 };
 
+export const addAdminTodo = async (data: TodoFormData) => {
+  return await apiClient.post('admin/todos/', data);
+};
+
 export const getCurrentUser = async (): Promise<CurrentUser> => {
   const { data } = await apiClient.get<CurrentUser>('auth/users/me/');
+  return data;
+};
+
+export const getAllUsers = async (): Promise<CurrentUser> => {
+  const { data } = await apiClient.get<CurrentUser>(`auth/users/`);
   return data;
 };

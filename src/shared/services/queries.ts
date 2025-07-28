@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAdminTodos, getCurrentUser, getTodos, getTodosStats } from './api.ts';
-import { Category, PaginatedResponse, TodoAdmin, TodoQueries, TodoStats } from '@/entities/todo';
+import { getAdminTodos, getAllUsers, getCurrentUser, getTodos, getTodosStats } from './api.ts';
+import { PaginatedResponse, TodoAdmin, TodoQueries, TodoStats } from '@/entities/todo';
 import { CurrentUser } from '@/shared/types/user.ts';
 
 export const useGetTodosQuery = (params: Record<string, string | number>) => {
@@ -28,5 +28,13 @@ export const useCurrentUserQuery = () => {
   return useQuery<CurrentUser, Error>({
     queryKey: ['current-user'],
     queryFn: getCurrentUser,
+  });
+};
+
+export const useUsers = (asAdmin: boolean) => {
+  return useQuery({
+    queryKey: ['all-users', asAdmin],
+    queryFn: getAllUsers,
+    enabled: asAdmin,
   });
 };

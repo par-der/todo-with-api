@@ -35,6 +35,7 @@ export interface TodoFormData {
   remind_at?: string;
   category: Category;
   completed?: boolean;
+  user_id?: number;
 }
 
 export interface TodoUpdateData extends Partial<TodoFormData> {
@@ -82,3 +83,11 @@ export interface TodoAdmin {
   user_email: string;
   user_is_staff: boolean;
 }
+
+export interface AdminTodo extends Todo {
+  user_username: string;
+  user_email: string;
+  user_is_staff: boolean;
+}
+
+export interface PaginatedAdminTodos extends PaginatedResponse<AdminTodo> {}

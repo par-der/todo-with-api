@@ -1,7 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addTodo, deleteTodo, loginApi, logoutApi, registerApi, updateTodo, updateTodoCompleted } from './api.ts';
+import {
+  addAdminTodo,
+  addTodo,
+  deleteTodo,
+  loginApi,
+  logoutApi,
+  registerApi,
+  updateTodo,
+  updateTodoCompleted,
+} from './api.ts';
 import { Login, Register } from '@/entities/auth.ts';
-import { Todo, TodoQueries, TodosResponse, TodoStats, TodoUpdateData } from '@/entities/todo';
+import { Todo, TodoFormData, TodoQueries, TodosResponse, TodoStats, TodoUpdateData } from '@/entities/todo';
 import { useAuthStore } from '@/stores/auth-store.ts';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -286,6 +295,48 @@ export const useUpdateTodoMutation = () => {
 
     onSettled() {
       qc.invalidateQueries({ queryKey: ['todos'] });
+    },
+  });
+};
+
+export const useAddAdminTodoMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: TodoFormData) => {
+      const userStore = useAuthStore.getState();
+      const isAdmin = userStore.user?.is_staff || false;
+
+      if (isAdmin) {
+        const adminData: TodoFormData = {
+          title: data.title,
+          description: data.description,
+          due_date: data.due_date,
+          remind_at: data.remind_at || null,
+          category: data.category,
+          completed: data.completed || false,
+          user: data.user,
+        };
+        return addAdminTodo(adminData);
+      } else {
+        const userData: TodoFormData = {
+          title: data.title,
+          description: data.description,
+          due_date: data.due_date,
+          remind_at: data.remind_at || null,
+          category: data.category,
+          completed: data.completed || false,
+        };
+        return addTodo(userData);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-todos'] });
+
+      toast.success('Задача успешно создана');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Не удалось создать задачу');
     },
   });
 };

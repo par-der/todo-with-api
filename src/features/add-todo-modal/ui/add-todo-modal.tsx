@@ -7,7 +7,8 @@ import { Button, Input, Label } from '@/shared/ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Calendar, Clock, Tag } from 'lucide-react';
 import { Textarea } from '@/shared/ui/textarea.tsx';
-import { toast } from 'react-toastify';
+import { useUsers } from '@/shared/services/queries.ts';
+import { useEffect, useState } from 'react';
 
 interface AddTodoModalProps {
   isOpen: boolean;
@@ -16,6 +17,10 @@ interface AddTodoModalProps {
 }
 
 export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalProps) => {
+  const { data: usersResponse } = useUsers(asAdmin);
+  const users = usersResponse?.results || [];
+
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const { mutate: addTodo, isPending } = useAddTodoMutation();
   const { register, handleSubmit, watch, setValue, reset } = useForm<TodoFormData>({
     defaultValues: {
@@ -27,17 +32,24 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
       completed: false,
     },
   });
-
   const watchedCategory = watch('category');
+
+  useEffect(() => {
+    if (selectedUserId !== null) {
+      setValue('user', selectedUserId);
+    }
+  }, [selectedUserId, setValue]);
 
   const onSubmit = (formData: TodoFormData) => {
     const submitData = {
       ...formData,
       remind_at: formData.remind_at || null,
+      ...(selectedUserId !== null && { user_id: selectedUserId }),
     };
     addTodo(submitData, {
       onSuccess: () => {
         reset();
+        setSelectedUserId(null);
         onClose();
       },
     });
@@ -50,7 +62,12 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent
+        className="sm:max-w-[500px]"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">Добавить новую задачу</DialogTitle>
           <DialogDescription>Заполните форму и нажмите «Добавить».</DialogDescription>
@@ -98,23 +115,46 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium flex items-center gap-2">
-              <Tag className="w-4 h-4" />
-              Категория
-            </Label>
-            <Select value={watchedCategory} onValueChange={(value: Category) => setValue('category', value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Выберите категорию" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                  <SelectItem key={key} value={key}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium flex items-center gap-2">
+                <Tag className="w-4 h-4" />
+                Категория
+              </Label>
+              <Select value={watchedCategory} onValueChange={(value: Category) => setValue('category', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите категорию" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {asAdmin && users.length > 0 && (
+              <div className="space-y-2">
+                <Label>Пользователь</Label>
+                <Select
+                  value={selectedUserId?.toString() || ''}
+                  onValueChange={(value) => setSelectedUserId(Number(value))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите пользователя" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.map((user) => (
+                      <SelectItem key={user.id} value={user.id.toString()}>
+                        {user.username}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           <DialogFooter className="flex gap-2">

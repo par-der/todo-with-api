@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { AddTodoModal, FloatingActionButton } from '@/features/add-todo-modal';
 import { Button, Pagination } from '@/shared/ui';
 import { usePaginationParams } from '../../lib/usePaginationParams.ts';
-import { Todo, TodoAdmin } from '@/entities/todo.ts';
+import { AdminTodo, PaginatedAdminTodos } from '@/entities/todo.ts';
 
 export default function AdminPage() {
   const { page, pageSize, setPage } = usePaginationParams(15);
@@ -13,40 +13,24 @@ export default function AdminPage() {
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const admins: TodoAdmin[] = useMemo(() => {
+  interface TableRow extends AdminTodo {
+    ownerName: string;
+    ownerEmail: string;
+    ownerIsStaff: boolean;
+  }
+
+  const tableRows = useMemo<TableRow[]>(() => {
     if (!data) return [];
-    const byUser = new Map<number, TodoAdmin>();
 
-    data.results.forEach((todo: any) => {
-      const { user, user_username, user_email, user_is_staff, ...todoFields } = todo;
+    const adminData = data as PaginatedAdminTodos;
 
-      if (!byUser.has(user)) {
-        byUser.set(user, {
-          user,
-          user_username,
-          user_email,
-          user_is_staff,
-          todos: [],
-        });
-      }
-      byUser.get(user)!.todos.push(todoFields as Todo);
-    });
-
-    return Array.from(byUser.values());
+    return adminData.results.map((todo: AdminTodo) => ({
+      ...todo,
+      ownerName: todo.user_username,
+      ownerEmail: todo.user_email,
+      ownerIsStaff: todo.user_is_staff,
+    }));
   }, [data]);
-
-  const tableRows = useMemo(
-    () =>
-      admins.flatMap((a) =>
-        a.todos.map((t) => ({
-          ...t,
-          ownerName: a.user_username,
-          ownerEmail: a.user_email,
-          ownerIsStaff: a.user_is_staff,
-        })),
-      ),
-    [admins],
-  );
 
   if (isLoading) return <div className="p-6">Загрузка…</div>;
   if (isError || !data) return <div className="p-6">Ошибка загрузки</div>;
