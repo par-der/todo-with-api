@@ -1,4 +1,4 @@
-import { useAddTodoMutation } from '@/shared/services/mutations.ts';
+import { useAddAdminTodoMutation, useAddTodoMutation } from '@/shared/services/mutations.ts';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import { Category, CATEGORY_LABELS, TodoFormData } from '@/entities/todo.ts';
@@ -22,6 +22,7 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
 
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const { mutate: addTodo, isPending } = useAddTodoMutation();
+  const { mutate: addAdminTodo, isPending: isAdminPending } = useAddAdminTodoMutation();
   const { register, handleSubmit, watch, setValue, reset } = useForm<TodoFormData>({
     defaultValues: {
       title: '',
@@ -36,23 +37,38 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
 
   useEffect(() => {
     if (selectedUserId !== null) {
-      setValue('user', selectedUserId);
+      setValue('user_id', selectedUserId);
     }
   }, [selectedUserId, setValue]);
 
   const onSubmit = (formData: TodoFormData) => {
-    const submitData = {
-      ...formData,
-      remind_at: formData.remind_at || null,
-      ...(selectedUserId !== null && { user_id: selectedUserId }),
-    };
-    addTodo(submitData, {
-      onSuccess: () => {
-        reset();
-        setSelectedUserId(null);
-        onClose();
-      },
-    });
+    if (asAdmin) {
+      const submitData = {
+        ...formData,
+        remind_at: formData.remind_at || null,
+        ...(selectedUserId !== null && { user_id: selectedUserId }),
+      };
+      addAdminTodo(submitData, {
+        onSuccess: () => {
+          reset();
+          setSelectedUserId(null);
+          onClose();
+        },
+      });
+    } else {
+      const submitData = {
+        ...formData,
+        remind_at: formData.remind_at || null,
+        ...(selectedUserId !== null && { user_id: selectedUserId }),
+      };
+      addTodo(submitData, {
+        onSuccess: () => {
+          reset();
+          setSelectedUserId(null);
+          onClose();
+        },
+      });
+    }
   };
 
   const handleClose = () => {
@@ -158,11 +174,11 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
           </div>
 
           <DialogFooter className="flex gap-2">
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isPending || isAdminPending}>
               Отмена
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? 'Добавление...' : 'Добавить задачу'}
+            <Button type="submit" disabled={isPending || isAdminPending}>
+              {isPending || isAdminPending ? 'Добавление...' : 'Добавить задачу'}
             </Button>
           </DialogFooter>
         </form>

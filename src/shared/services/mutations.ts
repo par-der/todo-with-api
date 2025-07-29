@@ -302,35 +302,8 @@ export const useUpdateTodoMutation = () => {
 export const useAddAdminTodoMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: TodoFormData) => {
-      const userStore = useAuthStore.getState();
-      const isAdmin = userStore.user?.is_staff || false;
-
-      if (isAdmin) {
-        const adminData: TodoFormData = {
-          title: data.title,
-          description: data.description,
-          due_date: data.due_date,
-          remind_at: data.remind_at || null,
-          category: data.category,
-          completed: data.completed || false,
-          user: data.user,
-        };
-        return addAdminTodo(adminData);
-      } else {
-        const userData: TodoFormData = {
-          title: data.title,
-          description: data.description,
-          due_date: data.due_date,
-          remind_at: data.remind_at || null,
-          category: data.category,
-          completed: data.completed || false,
-        };
-        return addTodo(userData);
-      }
-    },
+    mutationFn: (data: TodoFormData) => addAdminTodo(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
       queryClient.invalidateQueries({ queryKey: ['admin-todos'] });
 
       toast.success('Задача успешно создана');
