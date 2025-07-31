@@ -65,6 +65,16 @@ export const addAdminTodo = async (data: TodoFormData) => {
   return await apiClient.post('admin/todos/', data);
 };
 
+export const updateAdminTodo = async (updateData: TodoUpdateData): Promise<Todo> => {
+  const { id, ...data } = updateData;
+  const { data: response } = await apiClient.patch(`admin/todos/${id}/`, data);
+  return response;
+};
+
+export const deleteAdminTodo = async (id: number) => {
+  return await apiClient.delete(`admin/todos/${id}/`);
+};
+
 export const getCurrentUser = async (): Promise<CurrentUser> => {
   const { data } = await apiClient.get<CurrentUser>('auth/users/me/');
   return data;

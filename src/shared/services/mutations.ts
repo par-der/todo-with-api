@@ -2,10 +2,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   addAdminTodo,
   addTodo,
+  deleteAdminTodo,
   deleteTodo,
   loginApi,
   logoutApi,
   registerApi,
+  updateAdminTodo,
   updateTodo,
   updateTodoCompleted,
 } from './api.ts';
@@ -310,6 +312,34 @@ export const useAddAdminTodoMutation = () => {
     },
     onError: (error) => {
       toast.error(error.message || 'Не удалось создать задачу');
+    },
+  });
+};
+
+export const useUpdateAdminTodoMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: TodoUpdateData) => updateAdminTodo(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-todos'] });
+      toast.success('Задача изменена успешно');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Не удалось изменить задачу');
+    },
+  });
+};
+
+export const useDeleteAdminTodoMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteAdminTodo(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-todos'] });
+      toast.success('Задача удалена успешно');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Не удалось удалить задачу');
     },
   });
 };

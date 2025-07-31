@@ -3,7 +3,20 @@ import { useMemo, useState } from 'react';
 import { AddTodoModal, FloatingActionButton } from '@/features/add-todo-modal';
 import { Button, Pagination } from '@/shared/ui';
 import { usePaginationParams } from '../../lib/usePaginationParams.ts';
-import { AdminTodo, PaginatedAdminTodos } from '@/entities/todo.ts';
+import { AdminTodo, PaginatedAdminTodos, Todo } from '@/entities/todo.ts';
+import { EditTodoModal } from '@/features/edit-todo-modal/ui/edit-todo-modal.tsx';
+import { Edit2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/shared/ui/alert-dialog.tsx';
+import { useDeleteAdminTodoMutation } from '@/shared/services/mutations.ts';
 
 export default function AdminPage() {
   const { page, pageSize, setPage } = usePaginationParams(15);
@@ -12,6 +25,11 @@ export default function AdminPage() {
     page_size: pageSize,
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { mutate: deleteTodo } = useDeleteAdminTodoMutation();
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [deletingTodo, setDeletingTodo] = useState<number | null>(null);
 
   interface TableRow extends AdminTodo {
     ownerName: string;
@@ -31,6 +49,16 @@ export default function AdminPage() {
       ownerIsStaff: todo.user_is_staff,
     }));
   }, [data]);
+
+  const confirmDelete = () => {
+    if (deletingTodo) {
+      deleteTodo(deletingTodo, {
+        onSuccess: () => {
+          setDeletingTodo(null);
+        },
+      });
+    }
+  };
 
   if (isLoading) return <div className="p-6">Загрузка…</div>;
   if (isError || !data) return <div className="p-6">Ошибка загрузки</div>;
@@ -71,10 +99,24 @@ export default function AdminPage() {
                 <td className="px-3 py-2">{row.completed ? '✔️' : '—'}</td>
                 <td className="px-3 py-2">{new Date(row.created_at).toLocaleDateString()}</td>
                 <td className="px-3 py-2 space-x-2">
-                  <Button size="sm" variant="outline">
-                    Изменить
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setEditingTodo(row);
+                      setIsEditModalOpen(true);
+                    }}
+                  >
+                    <Edit2 className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="destructive">
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => {
+                      setDeletingTodo(row.id);
+                      setIsDeleteModalOpen(true);
+                    }}
+                  >
                     Удалить
                   </Button>
                 </td>
@@ -90,8 +132,35 @@ export default function AdminPage() {
         </div>
       )}
 
+      <EditTodoModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingTodo(null);
+        }}
+        todo={editingTodo}
+        asAdmin={true}
+      />
+
       <FloatingActionButton onClick={() => setIsAddModalOpen(true)} />
       <AddTodoModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} asAdmin />
+
+      <AlertDialog open={!!deletingTodo} onOpenChange={() => setDeletingTodo(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Удалить задачу?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Это действие нельзя будет отменить. Задача будет удалена навсегда.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeletingTodo(null)}>Отмена</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
+              Удалить
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
