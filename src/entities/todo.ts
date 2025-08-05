@@ -91,3 +91,10 @@ export interface AdminTodo extends Todo {
 }
 
 export interface PaginatedAdminTodos extends PaginatedResponse<AdminTodo> {}
+
+export interface AdminSort {
+  page: number;
+  page_size: number;
+  sort_field?: string;
+  sort_direction?: 'asc' | 'desc';
+}

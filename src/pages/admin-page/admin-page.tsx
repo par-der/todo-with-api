@@ -17,13 +17,20 @@ import {
   AlertDialogTitle,
 } from '@/shared/ui/alert-dialog.tsx';
 import { useDeleteAdminTodoMutation } from '@/shared/services/mutations.ts';
+import { useSorting } from '@/shared/lib/useSorting.ts';
 
 export default function AdminPage() {
   const { page, pageSize, setPage } = usePaginationParams(15);
-  const { data, isLoading, isError } = useGetAdminTodosQuery({
-    page,
-    page_size: pageSize,
-  });
+  const { sortField, sortDirection, toggleSort, getSortingParams } = useSorting('id');
+  const params = useMemo(
+    () => ({
+      page,
+      page_size: pageSize,
+      ...getSortingParams(),
+    }),
+    [page, pageSize, getSortingParams],
+  );
+  const { data, isLoading, isError } = useGetAdminTodosQuery(params);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -60,6 +67,11 @@ export default function AdminPage() {
     }
   };
 
+  const renderSortIcon = (field: string) => {
+    if (sortField !== field) return null;
+    return sortDirection === 'asc' ? ' ↑' : ' ↓';
+  };
+
   if (isLoading) return <div className="p-6">Загрузка…</div>;
   if (isError || !data) return <div className="p-6">Ошибка загрузки</div>;
 
@@ -74,9 +86,19 @@ export default function AdminPage() {
         <table className="w-full table-auto border-collapse text-sm">
           <thead className="bg-zinc-50">
             <tr>
-              <th className="border-b px-3 py-2 text-left">ID</th>
+              <th
+                className="border-b px-3 py-2 text-left cursor-pointer hover:bg-zinc-100"
+                onClick={() => toggleSort('id')}
+              >
+                ID {renderSortIcon('id')}
+              </th>
               <th className="border-b px-3 py-2 text-left">Пользователь</th>
-              <th className="border-b px-3 py-2 text-left">Задача</th>
+              <th
+                className="border-b px-3 py-2 text-left cursor-pointer hover:bg-zinc-100"
+                onClick={() => toggleSort('title')}
+              >
+                Задача {renderSortIcon('title')}
+              </th>
               <th className="border-b px-3 py-2 text-left">Категория</th>
               <th className="border-b px-3 py-2 text-left">Выполнена</th>
               <th className="border-b px-3 py-2 text-left">Создана</th>

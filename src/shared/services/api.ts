@@ -2,6 +2,7 @@ import axios from 'axios';
 import { apiClient, mainConfig } from './axios.ts';
 import { Login, LogoutResponse, Register } from '@/entities/auth.ts';
 import {
+  AdminSort,
   PaginatedResponse,
   Todo,
   TodoAdmin,
@@ -56,8 +57,8 @@ export const getTodosStats = async (): Promise<TodoStats> => {
   return data;
 };
 
-export const getAdminTodos = async (params: Record<string, number>) => {
-  const { data } = await apiClient.get<PaginatedResponse<TodoAdmin[]>>('admin/todos/', { params });
+export const getAdminTodos = async (params: AdminSort) => {
+  const { data } = await apiClient.get<PaginatedResponse<TodoAdmin[]>>('admin/sorted-todos/', { params });
   return data;
 };
 

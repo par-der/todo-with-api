@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAdminTodos, getAllUsers, getCurrentUser, getTodos, getTodosStats } from './api.ts';
-import { PaginatedResponse, TodoAdmin, TodoQueries, TodoStats } from '@/entities/todo';
+import { AdminSort, PaginatedResponse, TodoAdmin, TodoQueries, TodoStats } from '@/entities/todo';
 import { CurrentUser } from '@/shared/types/user.ts';
 
 export const useGetTodosQuery = (params: Record<string, string | number>) => {
@@ -17,9 +17,9 @@ export const useGetTodoStatsQuery = () => {
   });
 };
 
-export const useGetAdminTodosQuery = (params: Record<string, number>) => {
+export const useGetAdminTodosQuery = (params: AdminSort) => {
   return useQuery<PaginatedResponse<TodoAdmin[]>, Error>({
-    queryKey: ['admin-todos', params.page, params.page_size],
+    queryKey: ['admin-todos', params.page, params.page_size, params.sort_field, params.sort_direction],
     queryFn: () => getAdminTodos(params),
   });
 };
