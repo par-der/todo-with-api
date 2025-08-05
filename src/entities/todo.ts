@@ -97,4 +97,8 @@ export interface AdminSort {
   page_size: number;
   sort_field?: string;
   sort_direction?: 'asc' | 'desc';
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  completed?: boolean | null;
+  userId?: number | null;
 }

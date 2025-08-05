@@ -1,13 +1,21 @@
 import { presets } from '../lib/presets';
 import { useFilterStore } from '@/stores/filter-store';
 import { Popover, PopoverTrigger, PopoverContent } from '@/shared/ui/popover';
-import { CalendarIcon, CheckCircle2 } from 'lucide-react';
+import { CalendarIcon, CheckCircle2, User } from 'lucide-react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
+import { useLocation } from 'react-router';
+import { useUsers } from '@/shared/services/queries.ts';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select.tsx';
 
 export const TodoFilter = () => {
-  const { dateFrom, dateTo, completed, set } = useFilterStore();
+  const location = useLocation();
+  const isAdminPage = location.pathname.includes('/admin');
+  const { dateFrom, dateTo, completed, userId, set } = useFilterStore();
+  const { data: usersData } = useUsers(isAdminPage);
+
   const patch = (obj: Parameters<typeof set>[0]) => set(obj);
+  const users = Array.isArray(usersData) ? usersData : [];
 
   return (
     <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -64,6 +72,47 @@ export const TodoFilter = () => {
           </div>
         </PopoverContent>
       </Popover>
+
+      {isAdminPage && usersData && (
+        <div className="min-w-[200px]">
+          <Select
+            value={userId ? String(userId) : 'all'}
+            onValueChange={(value) => patch({ userId: value === 'all' ? null : Number(value) })}
+          >
+            <SelectTrigger className="w-full">
+              <div className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                <SelectValue placeholder="Все пользователи" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Все пользователи</SelectItem>
+              {usersData.results.map((user) => (
+                <SelectItem key={user.id} value={String(user.id)}>
+                  {user.username}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {(dateFrom || dateTo || completed || userId) && (
+        <button
+          type="button"
+          className="flex items-center gap-1 border rounded-md px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+          onClick={() =>
+            patch({
+              dateFrom: null,
+              dateTo: null,
+              completed: null,
+              userId: null,
+            })
+          }
+        >
+          Сбросить фильтры
+        </button>
+      )}
     </div>
   );
 };

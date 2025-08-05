@@ -32,7 +32,7 @@ export const useCurrentUserQuery = () => {
 };
 
 export const useUsers = (asAdmin: boolean) => {
-  return useQuery({
+  return useQuery<CurrentUser[], Error>({
     queryKey: ['all-users', asAdmin],
     queryFn: getAllUsers,
     enabled: asAdmin,
