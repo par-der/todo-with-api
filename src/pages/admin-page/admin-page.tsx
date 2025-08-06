@@ -26,9 +26,6 @@ export default function AdminPage() {
   const { page, pageSize, setPage } = usePaginationParams(15);
   const { sortField, sortDirection, toggleSort, getSortingParams } = useSorting('id');
   const { dateFrom, dateTo, completed, userId } = useFilterStore();
-  useEffect(() => {
-    console.log(sortDirection);
-  }, [sortDirection]);
   const { data, isLoading, isError } = useGetAdminTodosQuery({
     page: page,
     page_size: pageSize,

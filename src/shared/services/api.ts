@@ -58,7 +58,9 @@ export const getTodosStats = async (): Promise<TodoStats> => {
 };
 
 export const getAdminTodos = async (params: AdminSort) => {
-  const cleanParams = Object.fromEntries(Object.entries(params).filter(([_, v]) => v != null));
+  const cleanParams = Object.fromEntries(
+    Object.entries(params).filter(([_, value]) => value !== null && value !== undefined),
+  );
   const { data } = await apiClient.get<PaginatedResponse<TodoAdmin[]>>('admin/sorted-todos/', { params: cleanParams });
   return data;
 };
@@ -82,7 +84,7 @@ export const getCurrentUser = async (): Promise<CurrentUser> => {
   return data;
 };
 
-export const getAllUsers = async (): Promise<CurrentUser[]> => {
-  const { data } = await apiClient.get<CurrentUser[]>(`auth/users/`);
+export const getAllUsers = async (): Promise<PaginatedResponse<CurrentUser>> => {
+  const { data } = await apiClient.get<PaginatedResponse<CurrentUser>>(`auth/users/`);
   return data;
 };
