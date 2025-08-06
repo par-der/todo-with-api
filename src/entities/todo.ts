@@ -95,10 +95,11 @@ export interface PaginatedAdminTodos extends PaginatedResponse<AdminTodo> {}
 export interface AdminSort {
   page: number;
   page_size: number;
+  ordering?: string;
   sort_field?: string;
   sort_direction?: 'asc' | 'desc';
-  dateFrom?: string | null;
-  dateTo?: string | null;
+  date_from?: string | null;
+  date_to?: string | null;
   completed?: boolean | null;
-  userId?: number | null;
+  user_id?: number | null;
 }

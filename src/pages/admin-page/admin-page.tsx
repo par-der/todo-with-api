@@ -1,5 +1,5 @@
 import { useGetAdminTodosQuery } from '@/shared/services/queries.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddTodoModal, FloatingActionButton } from '@/features/add-todo-modal';
 import { Button, Pagination } from '@/shared/ui';
 import { usePaginationParams } from '../../lib/usePaginationParams.ts';
@@ -20,21 +20,25 @@ import { useSorting } from '@/shared/lib/useSorting.ts';
 import { useFilterStore } from '@/stores/filter-store.ts';
 import { TodoFilter } from '@/features/todo-filter/ui/todo-filter.tsx';
 import { AdminTable } from '@/features/admin-modal';
+import { format } from 'date-fns';
 
 export default function AdminPage() {
   const { page, pageSize, setPage } = usePaginationParams(15);
   const { sortField, sortDirection, toggleSort, getSortingParams } = useSorting('id');
   const { dateFrom, dateTo, completed, userId } = useFilterStore();
-  const params = {
-    page,
+  useEffect(() => {
+    console.log(sortDirection);
+  }, [sortDirection]);
+  const { data, isLoading, isError } = useGetAdminTodosQuery({
+    page: page,
     page_size: pageSize,
-    ...getSortingParams(),
-    dateFrom,
-    dateTo,
-    completed,
-    userId,
-  };
-  const { data, isLoading, isError } = useGetAdminTodosQuery(params);
+    sort_field: sortField,
+    sort_direction: sortDirection,
+    date_to: dateTo,
+    date_from: dateFrom,
+    completed: completed,
+    user_id: userId,
+  });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

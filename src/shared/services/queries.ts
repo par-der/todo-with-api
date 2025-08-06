@@ -19,7 +19,17 @@ export const useGetTodoStatsQuery = () => {
 
 export const useGetAdminTodosQuery = (params: AdminSort) => {
   return useQuery<PaginatedResponse<TodoAdmin[]>, Error>({
-    queryKey: ['admin-todos', params.page, params.page_size, params.sort_field, params.sort_direction],
+    queryKey: [
+      'admin-todos',
+      params.page,
+      params.page_size,
+      params.sort_field,
+      params.sort_direction,
+      params.date_to,
+      params.date_from,
+      params.completed,
+      params.user_id,
+    ],
     queryFn: () => getAdminTodos(params),
   });
 };
@@ -32,7 +42,7 @@ export const useCurrentUserQuery = () => {
 };
 
 export const useUsers = (asAdmin: boolean) => {
-  return useQuery<CurrentUser[], Error>({
+  return useQuery<PaginatedResponse<CurrentUser>, Error>({
     queryKey: ['all-users', asAdmin],
     queryFn: getAllUsers,
     enabled: asAdmin,

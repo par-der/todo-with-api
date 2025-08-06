@@ -27,6 +27,7 @@ export const useSorting = (defaultField = 'created_at') => {
     sortDirection,
     toggleSort,
     getSortingParams: () => ({
+      ordering: 'asc',
       sort_field: sortField,
       sort_direction: sortDirection,
     }),

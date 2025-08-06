@@ -56,7 +56,10 @@ export const TodoFilter = () => {
                 className="px-3 py-1 text-sm hover:bg-muted rounded-md text-left"
                 onClick={() => {
                   const [from, to] = range();
-                  patch({ dateFrom: from, dateTo: to });
+                  patch({
+                    dateFrom: format(new Date(from), 'yyyy-MM-dd'),
+                    dateTo: format(new Date(to), 'yyyy-MM-dd'),
+                  });
                 }}
               >
                 {label}
