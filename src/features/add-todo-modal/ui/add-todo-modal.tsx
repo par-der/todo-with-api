@@ -109,7 +109,7 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
               id="add-description"
               {...register('description')}
               placeholder="Опишите задачу подробнее"
-              className="min-h-[80px] text-wrap whitespace-pre-wrap"
+              className="h-40 max-h-48 resize-none overflow-y-auto text-wrap whitespace-pre-wrap"
             />
           </div>
 

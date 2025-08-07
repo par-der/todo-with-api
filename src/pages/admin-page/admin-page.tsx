@@ -29,7 +29,14 @@ export default function AdminPage() {
   const { page, pageSize, setPage } = usePaginationParams(15);
   const [searchParams] = useSearchParams();
   const { sortField, sortDirection, toggleSort } = useSorting('id');
-  const { dateFrom, dateTo, completed, userId } = useFilterStore();
+  const { dateFrom, dateTo, completed, userId, search } = useFilterStore();
+
+  useEffect(() => {
+    if (search !== null) {
+      setPage(1);
+    }
+  }, [search, setPage]);
+
   const { data, isLoading, isError } = useGetAdminTodosQuery({
     page: page,
     page_size: pageSize,
@@ -39,6 +46,7 @@ export default function AdminPage() {
     date_from: dateFrom,
     completed: completed,
     user_id: userId,
+    search: search,
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -76,7 +84,7 @@ export default function AdminPage() {
             <Button onClick={() => setIsAddModalOpen(true)}>Добавить задачу</Button>
           </div>
 
-          <TodoFilter />
+          <TodoFilter withSearch={true} />
 
           <AdminTable
             data={data}

@@ -29,6 +29,7 @@ export const useGetAdminTodosQuery = (params: AdminSort) => {
       params.date_from,
       params.completed,
       params.user_id,
+      params.search,
     ],
     queryFn: () => getAdminTodos(params),
   });

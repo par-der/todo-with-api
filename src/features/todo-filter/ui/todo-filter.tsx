@@ -1,24 +1,61 @@
 import { presets } from '../lib/presets';
 import { useFilterStore } from '@/stores/filter-store';
 import { Popover, PopoverTrigger, PopoverContent } from '@/shared/ui/popover';
-import { CalendarIcon, CheckCircle2, User } from 'lucide-react';
+import { CalendarIcon, CheckCircle2, Search, User } from 'lucide-react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import { useLocation } from 'react-router';
 import { useUsers } from '@/shared/services/queries.ts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select.tsx';
+import React, { useEffect, useState } from 'react';
+import { Input } from '@/shared/ui';
 
-export const TodoFilter = () => {
+interface TodoFilterProps {
+  withSearch?: boolean;
+}
+
+export const TodoFilter = ({ withSearch = false }: TodoFilterProps) => {
   const location = useLocation();
   const isAdminPage = location.pathname.includes('/admin');
-  const { dateFrom, dateTo, completed, userId, set } = useFilterStore();
+  const { dateFrom, dateTo, completed, userId, search, set } = useFilterStore();
   const { data: usersData } = useUsers(isAdminPage);
+  const [localSearch, setLocalSearch] = useState(search || '');
 
-  const patch = (obj: Parameters<typeof set>[0]) => set(obj);
-  const users = Array.isArray(usersData) ? usersData : [];
+  useEffect(() => {
+    setLocalSearch(search || '');
+  }, [search]);
+
+  const patch = (obj: Parameters<typeof set>[0]) => {
+    if (obj.dateFrom === null && obj.dateTo === null && obj.completed === null && obj.userId === null) {
+      set({ ...obj, search: null });
+    } else {
+      set(obj);
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearch(value);
+    const timeoutId = setTimeout(() => {
+      set({ search: value || null });
+    }, 10);
+    return () => clearTimeout(timeoutId);
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-3 mb-6">
+      {withSearch && (
+        <div className="relative flex-1 min-w-[200px] max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input
+            type="text"
+            placeholder="Поиск задач..."
+            value={localSearch}
+            onChange={handleSearchChange}
+            className="pl-10 w-full"
+          />
+        </div>
+      )}
       <button
         type="button"
         onClick={() => patch({ completed: completed ? null : true })}
@@ -100,7 +137,7 @@ export const TodoFilter = () => {
         </div>
       )}
 
-      {(dateFrom || dateTo || completed || userId) && (
+      {(dateFrom || dateTo || completed || userId || (withSearch && search)) && (
         <button
           type="button"
           className="flex items-center gap-1 border rounded-md px-3 py-2 text-sm text-red-600 hover:bg-red-50"
@@ -110,6 +147,7 @@ export const TodoFilter = () => {
               dateTo: null,
               completed: null,
               userId: null,
+              search: null,
             })
           }
         >

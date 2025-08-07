@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TodoList } from '@/features/todo-list';
 import Sidebar from '@/shared/ui/layout/sidebar/sidebar';
 import { LogoutButton } from '@/shared/ui/logout-button.tsx';
@@ -10,12 +10,21 @@ import { AddTodoModal } from '@/features/add-todo-modal/ui/add-todo-modal.tsx';
 import { TodoFilter } from '@/features/todo-filter/ui/todo-filter.tsx';
 import { useTodoParams } from '@/shared/lib/buildParams.ts';
 import { usePaginationParams } from '../../lib/usePaginationParams.ts';
+import { useFilterStore } from '@/stores/filter-store.ts';
 
 const HomePage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { page, pageSize, setPage } = usePaginationParams(15);
+  const { search } = useFilterStore();
+
+  useEffect(() => {
+    if (search !== null) {
+      setPage(1);
+    }
+  }, [search, setPage]);
+
   const params = useTodoParams(page, pageSize, selectedCategory);
   const { data: todoStats } = useGetTodoStatsQuery();
   const toggleSidebar = () => setSidebarOpen((p) => !p);
@@ -38,7 +47,7 @@ const HomePage = () => {
       <main
         className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'} h-screen overflow-y-auto p-6 w-full`}
       >
-        <TodoFilter />
+        <TodoFilter withSearch={true} />
         <CategoryCards
           onCategorySelect={handleCategorySelect}
           selectedCategory={selectedCategory}

@@ -102,4 +102,5 @@ export interface AdminSort {
   date_to?: string | null;
   completed?: boolean | null;
   user_id?: number | null;
+  search: string;
 }
