@@ -20,11 +20,15 @@ import { useSorting } from '@/shared/lib/useSorting.ts';
 import { useFilterStore } from '@/stores/filter-store.ts';
 import { TodoFilter } from '@/features/todo-filter/ui/todo-filter.tsx';
 import { AdminTable } from '@/features/admin-modal';
-import { format } from 'date-fns';
+import Sidebar from '@/shared/ui/layout/sidebar/sidebar';
+import { useSearchParams } from 'react-router';
 
 export default function AdminPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
   const { page, pageSize, setPage } = usePaginationParams(15);
-  const { sortField, sortDirection, toggleSort, getSortingParams } = useSorting('id');
+  const [searchParams] = useSearchParams();
+  const { sortField, sortDirection, toggleSort } = useSorting('id');
   const { dateFrom, dateTo, completed, userId } = useFilterStore();
   const { data, isLoading, isError } = useGetAdminTodosQuery({
     page: page,
@@ -59,65 +63,74 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Админская панель</h1>
-        <Button onClick={() => setIsAddModalOpen(true)}>Добавить задачу</Button>
-      </div>
+    <div className="flex min-h-screen">
+      <Sidebar isOpen={sidebarOpen} toggle={toggleSidebar} />
+      <main
+        className={`flex-1 transition-all duration-300 ease-in-out ${
+          sidebarOpen ? 'md:ml-64' : 'md:ml-16'
+        } ml-0 overflow-x-hidden`}
+      >
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold">Админская панель</h1>
+            <Button onClick={() => setIsAddModalOpen(true)}>Добавить задачу</Button>
+          </div>
 
-      <TodoFilter />
+          <TodoFilter />
 
-      <AdminTable
-        data={data}
-        isLoading={isLoading}
-        isError={isError}
-        toggleSort={toggleSort}
-        renderSortIcon={renderSortIcon}
-        onEdit={(todo) => {
-          setEditingTodo(todo);
-          setIsEditModalOpen(true);
-        }}
-        onDelete={(id) => {
-          setDeletingTodo(id);
-          setIsDeleteModalOpen(true);
-        }}
-      />
+          <AdminTable
+            data={data}
+            isLoading={isLoading}
+            isError={isError}
+            toggleSort={toggleSort}
+            renderSortIcon={renderSortIcon}
+            onEdit={(todo) => {
+              setEditingTodo(todo);
+              setIsEditModalOpen(true);
+            }}
+            onDelete={(id) => {
+              setDeletingTodo(id);
+              setIsDeleteModalOpen(true);
+            }}
+          />
 
-      {data && data.count > pageSize && (
-        <div className="mt-6 flex justify-center">
-          <Pagination currentPage={page} totalPages={Math.ceil(data.count / pageSize)} onPageChange={setPage} />
+          {data && data.count > pageSize && (
+            <div className="mt-6 flex justify-center">
+              <Pagination currentPage={page} totalPages={Math.ceil(data.count / pageSize)} onPageChange={setPage} />
+            </div>
+          )}
+
+          <EditTodoModal
+            isOpen={isEditModalOpen}
+            onClose={() => {
+              setIsEditModalOpen(false);
+              setEditingTodo(null);
+            }}
+            todo={editingTodo}
+            asAdmin={true}
+          />
+
+          <FloatingActionButton onClick={() => setIsAddModalOpen(true)} />
+          <AddTodoModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} asAdmin />
+
+          <AlertDialog open={!!deletingTodo} onOpenChange={() => setDeletingTodo(null)}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Удалить задачу?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Это действие нельзя будет отменить. Задача будет удалена навсегда.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setDeletingTodo(null)}>Отмена</AlertDialogCancel>
+                <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
+                  Удалить
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
-      )}
-
-      <EditTodoModal
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false);
-          setEditingTodo(null);
-        }}
-        todo={editingTodo}
-        asAdmin={true}
-      />
-
-      <FloatingActionButton onClick={() => setIsAddModalOpen(true)} />
-      <AddTodoModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} asAdmin />
-
-      <AlertDialog open={!!deletingTodo} onOpenChange={() => setDeletingTodo(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Удалить задачу?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Это действие нельзя будет отменить. Задача будет удалена навсегда.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeletingTodo(null)}>Отмена</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
-              Удалить
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      </main>
     </div>
   );
 }

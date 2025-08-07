@@ -5,7 +5,7 @@ import { Category, CATEGORY_LABELS, TodoFormData } from '@/entities/todo.ts';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Button, Input, Label } from '@/shared/ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
-import { Calendar, Clock, Tag } from 'lucide-react';
+import { Calendar, Clock, Tag, User } from 'lucide-react';
 import { Textarea } from '@/shared/ui/textarea.tsx';
 import { useUsers } from '@/shared/services/queries.ts';
 import { useEffect, useState } from 'react';
@@ -153,7 +153,10 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
 
             {asAdmin && users.length > 0 && (
               <div className="space-y-2">
-                <Label>Пользователь</Label>
+                <Label className="text-sm font-medium flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Пользователь
+                </Label>
                 <Select
                   value={selectedUserId?.toString() || ''}
                   onValueChange={(value) => setSelectedUserId(Number(value))}

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useSearchParams } from 'react-router';
 
 export const useSorting = (defaultField = 'created_at') => {
@@ -9,7 +9,8 @@ export const useSorting = (defaultField = 'created_at') => {
   const toggleSort = useCallback(
     (field: string) => {
       setSearchParams((prev) => {
-        const newDirection = prev.get('sort_field') === field && prev.get('sort_direction') === 'asc' ? 'desc' : 'asc';
+        const currentDirection = prev.get('sort_direction') || 'desc';
+        const newDirection = prev.get('sort_field') === field && currentDirection === 'asc' ? 'desc' : 'asc';
 
         const newParams = new URLSearchParams(prev);
         newParams.set('sort_field', field);
@@ -27,7 +28,6 @@ export const useSorting = (defaultField = 'created_at') => {
     sortDirection,
     toggleSort,
     getSortingParams: () => ({
-      ordering: 'asc',
       sort_field: sortField,
       sort_direction: sortDirection,
     }),
