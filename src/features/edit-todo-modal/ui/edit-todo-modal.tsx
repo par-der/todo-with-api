@@ -1,5 +1,5 @@
 import { Category, CATEGORY_LABELS, Todo, TodoFormData } from '@/entities/todo.ts';
-import { useUpdateTodoMutation } from '@/shared/services/mutations.ts';
+import { useUpdateAdminTodoMutation, useUpdateTodoMutation } from '@/shared/services/mutations.ts';
 import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import * as React from 'react';
@@ -13,10 +13,11 @@ interface EditTodoModalProps {
   todo: Todo | null;
   isOpen: boolean;
   onClose: () => void;
+  asAdmin?: boolean;
 }
 
-export const EditTodoModal = ({ todo, isOpen, onClose }: EditTodoModalProps) => {
-  const { mutate: updateTodo, isPending } = useUpdateTodoMutation();
+export const EditTodoModal = ({ todo, isOpen, onClose, asAdmin = false }: EditTodoModalProps) => {
+  const { mutate: updateTodo, isPending } = asAdmin ? useUpdateAdminTodoMutation() : useUpdateTodoMutation();
   const {
     register,
     handleSubmit,

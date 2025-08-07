@@ -5,4 +5,5 @@ export const NAVIGATION_ROUTES = {
   SIGN_UP: '/signup',
   USER: '/user',
   TODAY: '/today',
+  ADMIN: '/admin',
 };

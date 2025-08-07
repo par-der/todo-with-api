@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Login } from '@/entities/auth';
+import { getCurrentUser } from '@/shared/services/api.ts';
 
 export const LoginForm = () => {
   const {
@@ -14,21 +15,28 @@ export const LoginForm = () => {
     formState: { errors, isSubmitting },
   } = useForm<Login>();
   const loginMutation = useLoginTodoMutation();
-  const setAuth = useAuthStore((state) => state.login);
+  const { login, setUser } = useAuthStore.getState();
   const navigate = useNavigate();
 
   const onSubmit = (data: Login) => {
     loginMutation.mutate(data, {
-      onSuccess: (res: { data?: { auth_token?: string } }) => {
+      onSuccess: async (res) => {
         const token = res.data?.auth_token;
-        if (token) {
-          setAuth(token);
-          navigate('/', { replace: true });
+        if (!token) return;
+
+        login(token);
+
+        try {
+          const me = await getCurrentUser();
+          setUser(me);
+        } catch {
+          setUser(null);
         }
+
+        navigate('/', { replace: true });
       },
-      onError: (err: Error) => {
-        console.error('Login failed:', err);
-      },
+
+      onError: (err) => console.error('Login failed:', err),
     });
   };
 

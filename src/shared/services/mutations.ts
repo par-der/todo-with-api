@@ -1,7 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addTodo, deleteTodo, loginApi, logoutApi, registerApi, updateTodo, updateTodoCompleted } from './api.ts';
+import {
+  addAdminTodo,
+  addTodo,
+  deleteAdminTodo,
+  deleteTodo,
+  loginApi,
+  logoutApi,
+  registerApi,
+  updateAdminTodo,
+  updateTodo,
+  updateTodoCompleted,
+} from './api.ts';
 import { Login, Register } from '@/entities/auth.ts';
-import { Todo, TodoQueries, TodosResponse, TodoStats, TodoUpdateData } from '@/entities/todo';
+import { Todo, TodoFormData, TodoQueries, TodosResponse, TodoStats, TodoUpdateData } from '@/entities/todo';
 import { useAuthStore } from '@/stores/auth-store.ts';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -286,6 +297,49 @@ export const useUpdateTodoMutation = () => {
 
     onSettled() {
       qc.invalidateQueries({ queryKey: ['todos'] });
+    },
+  });
+};
+
+export const useAddAdminTodoMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: TodoFormData) => addAdminTodo(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-todos'] });
+
+      toast.success('Задача успешно создана');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Не удалось создать задачу');
+    },
+  });
+};
+
+export const useUpdateAdminTodoMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: TodoUpdateData) => updateAdminTodo(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-todos'] });
+      toast.success('Задача изменена успешно');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Не удалось изменить задачу');
+    },
+  });
+};
+
+export const useDeleteAdminTodoMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteAdminTodo(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-todos'] });
+      toast.success('Задача удалена успешно');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Не удалось удалить задачу');
     },
   });
 };

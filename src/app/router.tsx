@@ -3,6 +3,8 @@ import { GuestOnlyRoute, ProtectedRoute } from '@/app/protected-route';
 import { NAVIGATION_ROUTES } from '@/shared/constants/routes';
 import { lazy } from 'react';
 import TodayPage from '@/pages/today-page/today-page.tsx';
+import { ProtectedRouterAdmin } from '@/app/protected-router-admin.tsx';
+import AdminPage from '@/pages/admin-page/admin-page.tsx';
 
 const LoginPage = lazy(() => import('@/pages/login-page/login-page'));
 const UserPage = lazy(() => import('@/pages/user-page/user-page'));
@@ -37,6 +39,15 @@ export const router = createBrowserRouter([
       {
         path: NAVIGATION_ROUTES.SIGN_UP,
         element: <AuthPage />,
+      },
+    ],
+  },
+  {
+    element: <ProtectedRouterAdmin />,
+    children: [
+      {
+        path: NAVIGATION_ROUTES.ADMIN,
+        element: <AdminPage />,
       },
     ],
   },
