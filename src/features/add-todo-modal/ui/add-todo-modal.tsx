@@ -9,6 +9,7 @@ import { Calendar, Clock, Tag, User } from 'lucide-react';
 import { Textarea } from '@/shared/ui/textarea.tsx';
 import { useUsers } from '@/shared/services/queries.ts';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 interface AddTodoModalProps {
   isOpen: boolean;
@@ -23,7 +24,15 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const { mutate: addTodo, isPending } = useAddTodoMutation();
   const { mutate: addAdminTodo, isPending: isAdminPending } = useAddAdminTodoMutation();
-  const { register, handleSubmit, watch, setValue, reset } = useForm<TodoFormData>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    setError,
+    formState: { errors },
+  } = useForm<TodoFormData>({
     defaultValues: {
       title: '',
       description: '',
@@ -54,6 +63,26 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
           setSelectedUserId(null);
           onClose();
         },
+        onError: (error: any) => {
+          if (axios.isAxiosError(error) && error.response?.status === 400) {
+            const data = error.response.data;
+            Object.entries(data).forEach(([field, messages]) => {
+              setError(field as keyof TodoFormData, {
+                type: 'server',
+                message: (messages as string[])[0],
+              });
+            });
+          } else {
+            const msg =
+              axios.isAxiosError(error) && error.response?.data?.detail
+                ? (error.response.data.detail as string[])[0]
+                : 'Серверная ошибка';
+            setError('root.serverError' as any, {
+              type: 'server',
+              message: msg,
+            });
+          }
+        },
       });
     } else {
       const submitData = {
@@ -66,6 +95,26 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
           reset();
           setSelectedUserId(null);
           onClose();
+        },
+        onError: (error: any) => {
+          if (axios.isAxiosError(error) && error.response?.status === 400) {
+            const data = error.response.data;
+            Object.entries(data).forEach(([field, messages]) => {
+              setError(field as keyof TodoFormData, {
+                type: 'server',
+                message: (messages as string[])[0],
+              });
+            });
+          } else {
+            const msg =
+              axios.isAxiosError(error) && error.response?.data?.detail
+                ? (error.response.data.detail as string[])[0]
+                : 'Серверная ошибка';
+            setError('root.serverError' as any, {
+              type: 'server',
+              message: msg,
+            });
+          }
         },
       });
     }
@@ -99,6 +148,7 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
               {...register('title', { required: 'Название обязательно' })}
               placeholder="Введите название задачи"
             />
+            {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -111,6 +161,7 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
               placeholder="Опишите задачу подробнее"
               className="h-40 max-h-48 resize-none overflow-y-auto text-wrap whitespace-pre-wrap"
             />
+            {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -120,6 +171,7 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
                 Дата выполнения
               </Label>
               <Input id="add-due-date" type="date" {...register('due_date', { required: 'Дата обязательна' })} />
+              {errors.due_date && <p className="text-red-500 text-sm">{errors.due_date.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -128,6 +180,7 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
                 Время напоминания
               </Label>
               <Input id="add-remind-at" type="time" {...register('remind_at')} />
+              {errors.remind_at && <p className="text-red-500 text-sm">{errors.remind_at.message}</p>}
             </div>
           </div>
 
