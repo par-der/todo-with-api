@@ -5,6 +5,7 @@ export interface User {
   first_name?: string | null;
   last_name?: string | null;
   avatar?: string;
+  is_staff: boolean;
   date_joined?: string;
   last_login?: string | null;
 }

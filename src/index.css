@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -117,4 +118,39 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer components {
+  /* Коробка календаря — прозрачная, без рамки и скруглений */
+  .rbc-calendar { @apply bg-transparent text-foreground border-0 rounded-none shadow-none; }
+
+  /* Тулбар — без рамки и лишних паддингов */
+  .rbc-toolbar { @apply px-2 py-2 border-0; }
+  .rbc-btn-group > button { @apply px-3 py-1 text-sm rounded-md border border-input hover:bg-muted/60; }
+
+  /* Месячная сетка — без внешних паддингов */
+  .rbc-month-view { @apply p-0; }
+  .rbc-header { @apply py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground; }
+  .rbc-month-row { @apply border-t border-border/60; }
+  .rbc-day-bg { @apply bg-transparent; }             /* клетки прозрачные */
+  .rbc-off-range-bg { @apply bg-transparent; }
+  .rbc-off-range { @apply text-muted-foreground; }
+  .rbc-today { @apply bg-accent/20; }                 /* мягкая подсветка сегодня, при желании убери */
+
+  /* События — прозрачные блоки с тонкой рамкой */
+  .rbc-event {
+    @apply bg-transparent border border-border/60 text-foreground rounded-md text-xs px-2 py-0.5;
+  }
+  .rbc-event.rbc-selected { @apply ring-1 ring-ring; }
+  .rbc-allday-cell .rbc-event { @apply bg-transparent; }
+
+  /* Week/Day — тоже без лишних отступов, только сетка */
+  .rbc-time-view { @apply p-0; }
+  .rbc-time-header { @apply border-b border-border/60; }
+  .rbc-time-content > * + * { @apply border-l border-border/60; }
+  .rbc-timeslot-group { @apply border-b border-border/60; }
+
+  /* Popup (+N ещё) — плоский */
+  .rbc-overlay { @apply rounded-md border border-border bg-background shadow-none; }
+  .rbc-overlay-header { @apply px-3 py-2 text-sm font-medium border-b border-border; }
 }

@@ -52,6 +52,7 @@ export default function Sidebar({ isOpen, toggle }: Props) {
         <SidebarButton to={NAVIGATION_ROUTES.HOME} icon={Files} label="Главная" isOpen={isOpen} />
         {/*<SidebarButton to={NAVIGATION_ROUTES.ADD_TODO} icon={Search} label="Поиск" isOpen={isOpen} />*/}
         <SidebarButton to={NAVIGATION_ROUTES.TODAY} icon={Clock11} label="Сегодня" isOpen={isOpen} />
+        <SidebarButton to={NAVIGATION_ROUTES.CALENDAR} icon={Calendar} label="Календарь" isOpen={isOpen} />
       </nav>
 
       <div className="mt-auto p-2">

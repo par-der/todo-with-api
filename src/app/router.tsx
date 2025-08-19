@@ -5,6 +5,7 @@ import { lazy } from 'react';
 import TodayPage from '@/pages/today-page/today-page.tsx';
 import { ProtectedRouterAdmin } from '@/app/protected-router-admin.tsx';
 import AdminPage from '@/pages/admin-page/admin-page.tsx';
+import CalendarPage from '@/pages/calendar-page/calendar-page.tsx';
 
 const LoginPage = lazy(() => import('@/pages/login-page/login-page'));
 const UserPage = lazy(() => import('@/pages/user-page/user-page'));
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: NAVIGATION_ROUTES.TODAY,
         element: <TodayPage />,
+      },
+      {
+        path: NAVIGATION_ROUTES.CALENDAR,
+        element: <CalendarPage />,
       },
     ],
   },

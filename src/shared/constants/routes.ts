@@ -6,4 +6,5 @@ export const NAVIGATION_ROUTES = {
   USER: '/user',
   TODAY: '/today',
   ADMIN: '/admin',
+  CALENDAR: '/calendar',
 };

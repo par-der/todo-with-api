@@ -88,3 +88,8 @@ export const getAllUsers = async (): Promise<PaginatedResponse<CurrentUser>> => 
   const { data } = await apiClient.get<PaginatedResponse<CurrentUser>>(`auth/users/`);
   return data;
 };
+
+export const getTodosCalendar = async (params: { from: string; to: string }) => {
+  const { data } = await apiClient.get<Todo[]>('todos/calendar/', { params });
+  return data;
+};
