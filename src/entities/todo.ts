@@ -19,9 +19,13 @@ export interface Todo {
 }
 
 export interface TodosResponse {
+  category: Category;
   completed: boolean;
+  due_date: string;
   title: string;
   description: string;
+  remind_at?: string | null;
+  user_id?: number;
 }
 
 export interface TodoList extends Todo {
@@ -32,9 +36,9 @@ export interface TodoFormData {
   title: string;
   description: string;
   due_date: string;
-  remind_at?: string;
+  remind_at?: string | null;
   category: Category;
-  completed?: boolean;
+  completed: boolean;
   user_id?: number;
 }
 

@@ -1,10 +1,18 @@
 import { useLogoutTodoMutation } from '@/shared/services/mutations.ts';
+import { Button } from '@/shared/ui/button.tsx';
+import { LogOut } from 'lucide-react';
 
-export const LogoutButton = () => {
+type Props = {
+  className?: string;
+};
+
+export const LogoutButton = ({ className }: Props) => {
   const { mutate, isPending } = useLogoutTodoMutation();
+
   return (
-    <button onClick={() => mutate()} disabled={isPending}>
-      Logout
-    </button>
+    <Button type="button" variant="destructive" onClick={() => mutate()} disabled={isPending} className={className}>
+      <LogOut />
+      {isPending ? 'Выходим...' : 'Выйти'}
+    </Button>
   );
 };

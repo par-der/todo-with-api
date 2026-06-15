@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { TodoList } from '@/features/todo-list';
 import Sidebar from '@/shared/ui/layout/sidebar/sidebar';
-import { LogoutButton } from '@/shared/ui/logout-button.tsx';
 import { Category } from '@/entities/todo.ts';
 import { useGetTodoStatsQuery } from '@/shared/services/queries.ts';
 import CategoryCards from '@/features/category-cards/ui/CategoryCards.tsx';
@@ -57,7 +56,6 @@ const HomePage = () => {
 
         <FloatingActionButton onClick={handleAddTodo} />
         <AddTodoModal isOpen={isAddModalOpen} onClose={handleCloseAddModal} />
-        <LogoutButton />
       </main>
     </div>
   );

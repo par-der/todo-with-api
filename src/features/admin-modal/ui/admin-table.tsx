@@ -2,7 +2,7 @@ import { AdminTodo, PaginatedAdminTodos } from '@/entities/todo.ts';
 import { AdminTableRow } from '@/features/admin-modal/ui/admin-table-row.tsx';
 
 interface AdminTableProps {
-  data: PaginatedAdminTodos;
+  data?: PaginatedAdminTodos;
   isError: boolean;
   isLoading: boolean;
   toggleSort: (field: string) => void;

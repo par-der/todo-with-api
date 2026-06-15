@@ -5,11 +5,7 @@ import { Pagination } from '@/shared/ui/pagination';
 import { Category, CATEGORY_LABELS, Todo } from '@/entities/todo.ts';
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import {
-  useDeleteTodoMutation,
-  useToggleCompletedMutation,
-  useToggleCompletedMutationSimple,
-} from '@/shared/services/mutations.ts';
+import { useDeleteTodoMutation, useToggleCompletedMutationSimple } from '@/shared/services/mutations.ts';
 import { TodoItemToday } from '@/entities/todo/ui/todo-item-today.tsx';
 import { EditTodoModal } from '@/features/edit-todo-modal/ui/edit-todo-modal.tsx';
 import {
@@ -37,7 +33,7 @@ export const TodoList: React.FC<TodoListProps> = ({ selectedCategory, onPageChan
   // const filtersReady = dateFrom !== undefined && dateTo !== undefined && completed !== undefined;
   // const params = useTodoParams(page, pageSize, selectedCategory);
 
-  const { data: todos, isLoading, isError } = useGetTodosQuery(params);
+  const { data: todos, isLoading, isError, error } = useGetTodosQuery(params);
   const { items, count, totalPages } = mapTodos(todos, pageSize);
 
   const { mutate: toggleCompleted } = useToggleCompletedMutationSimple();

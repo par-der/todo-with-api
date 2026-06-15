@@ -1,4 +1,4 @@
-import { Calendar, ChevronLeft, Clock11, Files, Search, Shield, User, UserIcon } from 'lucide-react';
+import { Calendar, ChevronLeft, Clock11, Files, Shield, UserIcon } from 'lucide-react';
 import { NavLink } from 'react-router';
 import { NAVIGATION_ROUTES } from '../../../constants/routes.ts';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar.tsx';

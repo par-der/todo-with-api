@@ -7,15 +7,6 @@ const TodayPage = () => {
   const today = new Date();
   const toggleSidebar = () => setSidebarOpen((p) => !p);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-  const handleAddTodo = () => {
-    setIsAddModalOpen(true);
-  };
-
-  const handleCloseAddModal = () => {
-    setIsAddModalOpen(false);
-  };
 
   return (
     <div className="flex min-h-screen">

@@ -52,12 +52,12 @@ export const useAddTodoMutation = () => {
       const prevStats = queryClient.getQueryData<TodoStats>(['todo-stats']);
 
       const optimistic: Todo = {
+        ...data,
         id: Date.now(),
-        completed: false,
+        completed: data.completed ?? false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        remind_at: null,
-        ...data,
+        remind_at: data.remind_at ?? null,
       };
 
       if (prevPage) {
@@ -181,7 +181,7 @@ export const useToggleCompletedMutation = () => {
       return { previousTodosQueries, previousStats };
     },
 
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       if (context?.previousTodosQueries) {
         context.previousTodosQueries.forEach(([queryKey, data]) => {
           qc.setQueryData(queryKey, data);

@@ -1,5 +1,5 @@
 import Sidebar from '@/shared/ui/layout/sidebar/sidebar';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Calendar, dateFnsLocalizer, View, DateRange } from 'react-big-calendar';
 import {
   format,
@@ -7,7 +7,6 @@ import {
   startOfWeek,
   getDay,
   parseISO,
-  addDays,
   addMinutes,
   startOfMonth,
   endOfMonth,
@@ -16,14 +15,14 @@ import {
   min as dfMin,
   max as dfMax,
 } from 'date-fns';
-import ru from 'date-fns/locale/ru';
+import { ru } from 'date-fns/locale/ru';
 import { Todo } from '@/entities/todo.ts';
-import { useGetTodosCalendarQuery, useGetTodosQuery } from '@/shared/services/queries.ts';
+import { useGetTodosCalendarQuery } from '@/shared/services/queries.ts';
 
 const locales = { ru };
 const localizer = dateFnsLocalizer({
   format,
-  startOfWeek: (date) => startOfWeek(date, { weekStartsOn: 1 }),
+  startOfWeek: (date: Date) => startOfWeek(date, { weekStartsOn: 1 }),
   getDay,
   locales,
 });
@@ -139,23 +138,6 @@ export default function CalendarPage() {
 
   const views: View[] = ['month', 'week', 'day', 'agenda'];
 
-  useEffect(() => {
-    const rows = (data?.results ?? []).map((t) => ({
-      id: t.id,
-      due_date: t.due_date,
-      remind_at: t.remind_at,
-    }));
-    console.table(rows);
-  }, [data]);
-
-  useEffect(() => {
-    console.table(
-      events
-        .filter((e) => e.start.getDate() === 19 && e.start.getMonth() === 7) // 19 августа
-        .map((e) => ({ id: e.id, title: e.title, start: e.start.toString() })),
-    );
-  }, [events]);
-
   return (
     <div className="flex min-h-screen">
       <Sidebar isOpen={sidebarOpen} toggle={toggleSidebar} />
@@ -174,7 +156,7 @@ export default function CalendarPage() {
             views={views}
             date={date}
             onView={setView}
-            onNavigate={(d, v) => {
+            onNavigate={(d: Date, v?: View) => {
               setDate(d);
               if (v) setView(v);
             }}

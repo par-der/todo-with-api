@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { AddTodoModal, FloatingActionButton } from '@/features/add-todo-modal';
 import { Button, Pagination } from '@/shared/ui';
 import { usePaginationParams } from '../../lib/usePaginationParams.ts';
-import { PaginatedAdminTodos, Todo } from '@/entities/todo.ts';
+import { Todo } from '@/entities/todo.ts';
 import { EditTodoModal } from '@/features/edit-todo-modal/ui/edit-todo-modal.tsx';
 import {
   AlertDialog,
@@ -21,13 +21,11 @@ import { useFilterStore } from '@/stores/filter-store.ts';
 import { TodoFilter } from '@/features/todo-filter/ui/todo-filter.tsx';
 import { AdminTable } from '@/features/admin-modal';
 import Sidebar from '@/shared/ui/layout/sidebar/sidebar';
-import { useSearchParams } from 'react-router';
 
 export default function AdminPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
   const { page, pageSize, setPage } = usePaginationParams(15);
-  const [searchParams] = useSearchParams();
   const { sortField, sortDirection, toggleSort } = useSorting('id');
   const { dateFrom, dateTo, completed, userId, search } = useFilterStore();
 
@@ -46,11 +44,10 @@ export default function AdminPage() {
     date_from: dateFrom,
     completed: completed,
     user_id: userId,
-    search: search,
+    search: search ?? '',
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { mutate: deleteTodo } = useDeleteAdminTodoMutation();
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodo, setDeletingTodo] = useState<number | null>(null);
@@ -98,7 +95,6 @@ export default function AdminPage() {
             }}
             onDelete={(id) => {
               setDeletingTodo(id);
-              setIsDeleteModalOpen(true);
             }}
           />
 

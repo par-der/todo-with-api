@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
 import { gsap } from 'gsap';
 
 /**
  * Плавное появление карточки при монтировании.
  */
-export function useCategoryEntryAnimation(cardRef: React.RefObject<HTMLElement>) {
+export function useCategoryEntryAnimation(cardRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const card = cardRef.current;
     if (!card) return;
@@ -19,11 +19,11 @@ export function useCategoryEntryAnimation(cardRef: React.RefObject<HTMLElement>)
 /**
  * Hover / Click анимации (таймлайн + play/reverse).
  */
-export function useCategoryHoverAnimation(
-  cardRef: React.RefObject<HTMLElement>,
-  contentRef: React.RefObject<HTMLElement>,
-  category: string,
-  onSelect: (cat: string) => void,
+export function useCategoryHoverAnimation<TCategory extends string>(
+  cardRef: RefObject<HTMLElement | null>,
+  contentRef: RefObject<HTMLElement | null>,
+  category: TCategory,
+  onSelect: (cat: TCategory) => void,
   isSelected: boolean,
 ) {
   const hoverTl = useRef<gsap.core.Timeline | null>(null);
@@ -93,7 +93,7 @@ export function useCategoryHoverAnimation(
 /**
  * Тень при выборе.
  */
-export function useCategorySelectShadow(cardRef: React.RefObject<HTMLElement>, isSelected: boolean) {
+export function useCategorySelectShadow(cardRef: RefObject<HTMLElement | null>, isSelected: boolean) {
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
@@ -108,7 +108,7 @@ export function useCategorySelectShadow(cardRef: React.RefObject<HTMLElement>, i
 /**
  * Появление контейнера (например, списка категорий).
  */
-export function useContainerEntryAnimation(ref: React.RefObject<HTMLElement>) {
+export function useContainerEntryAnimation(ref: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;

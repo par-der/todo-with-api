@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAdminTodos, getAllUsers, getCurrentUser, getTodos, getTodosCalendar, getTodosStats } from './api.ts';
-import { AdminSort, PaginatedResponse, Todo, TodoAdmin, TodoQueries, TodoStats } from '@/entities/todo';
+import { AdminSort, AdminTodo, PaginatedResponse, Todo, TodoQueries, TodoStats } from '@/entities/todo';
 import { CurrentUser } from '@/shared/types/user.ts';
 
 export const useGetTodosQuery = (params: Record<string, string | number>) => {
@@ -18,7 +18,7 @@ export const useGetTodoStatsQuery = () => {
 };
 
 export const useGetAdminTodosQuery = (params: AdminSort) => {
-  return useQuery<PaginatedResponse<TodoAdmin[]>, Error>({
+  return useQuery<PaginatedResponse<AdminTodo>, Error>({
     queryKey: [
       'admin-todos',
       params.page,

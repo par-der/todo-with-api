@@ -3,9 +3,9 @@ import { apiClient, mainConfig } from './axios.ts';
 import { Login, LogoutResponse, Register } from '@/entities/auth.ts';
 import {
   AdminSort,
+  AdminTodo,
   PaginatedResponse,
   Todo,
-  TodoAdmin,
   TodoFormData,
   TodoQueries,
   TodosResponse,
@@ -61,7 +61,7 @@ export const getAdminTodos = async (params: AdminSort) => {
   const cleanParams = Object.fromEntries(
     Object.entries(params).filter(([_, value]) => value !== null && value !== undefined),
   );
-  const { data } = await apiClient.get<PaginatedResponse<TodoAdmin[]>>('admin/sorted-todos/', { params: cleanParams });
+  const { data } = await apiClient.get<PaginatedResponse<AdminTodo>>('admin/sorted-todos/', { params: cleanParams });
   return data;
 };
 

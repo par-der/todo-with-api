@@ -37,7 +37,7 @@ export const AddTodoModal = ({ isOpen, onClose, asAdmin = false }: AddTodoModalP
       title: '',
       description: '',
       due_date: format(new Date(), 'yyyy-MM-dd'),
-      remind_at: null as unknown as string,
+      remind_at: '',
       category: 'HEALTH',
       completed: false,
     },

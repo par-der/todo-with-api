@@ -1,4 +1,6 @@
 import { LoginForm } from '@/features/login-form';
+import { NAVIGATION_ROUTES } from '@/shared/constants/routes';
+import { Link } from 'react-router';
 
 const LoginPage = () => {
   return (
@@ -14,10 +16,10 @@ const LoginPage = () => {
                 </div>
                 <LoginForm />
                 <div className="text-center text-sm">
-                  Don't have an account?{' '}
-                  <a href="#" className="underline underline-offset-4">
+                  Don&apos;t have an account?{' '}
+                  <Link to={NAVIGATION_ROUTES.SIGN_UP} className="underline underline-offset-4">
                     Sign up
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

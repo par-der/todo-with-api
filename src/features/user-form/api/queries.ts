@@ -46,4 +46,4 @@ export const useSetUsernameMutation = () => {
   });
 };
 
-export const useChangePasswordMutation = () => useMutation(api.changePassword);
+export const useChangePasswordMutation = () => useMutation({ mutationFn: api.changePassword });
